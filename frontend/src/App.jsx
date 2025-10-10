@@ -1,19 +1,21 @@
-// src/App.jsx
-import React from "react";
-import Navbar from "./components/navbar"; // pastikan path-nya sesuai
+// src/AppRoutes.jsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-function App() {
+// Halaman Umum
+import Home from './pages/home';
+import Login from './pages/login';
+
+const AppRoutes = () => {
   return (
-    <>
-      <Navbar />
-      <main className="p-6">
-        <h1 className="text-2xl font-bold">Selamat Datang di Website Kami</h1>
-        <p className="mt-2 text-gray-600">
-          Ini adalah halaman beranda dengan navbar di atas.
-        </p>
-      </main>
-    </>
-  );
-}
+    <Router>
 
-export default App;
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
+  );
+};
+
+export default AppRoutes;
