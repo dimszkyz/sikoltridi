@@ -2,6 +2,7 @@
 import React from "react";
 import { motion, MotionConfig } from "framer-motion";
 import Navbar from "../components/navbar";
+import Partfile from "./PartFile";
 import logo from "../assets/img/output-onlinepngtools.png";
 
 /* ===== Variants yang smooth ===== */
@@ -50,7 +51,8 @@ const imageWrap = {
 
 const Home = () => {
   return (
-    <section
+    <>
+     <section
       id="home"
       className="min-h-screen bg-white pt-20 md:pt-24 relative overflow-hidden"
     >
@@ -120,6 +122,10 @@ const Home = () => {
         </div>
       </MotionConfig>
     </section>
+    <section id="partfile">
+       <Partfile /> 
+    </section>
+    </>
   );
 };
 
