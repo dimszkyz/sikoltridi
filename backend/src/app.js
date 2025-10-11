@@ -17,9 +17,11 @@ app.get('/', (req, res) => {
 
 // === ROUTE MODULAR ===
 const userRoutes = require('./routes/userRoutes');
-const fileRoutes = require('./routes/fileRoutes'); // <-- 1. Impor rute file
+const fileRoutes = require('./routes/fileRoutes'); 
+app.use('/uploads/files', express.static('uploads/files'));
+app.use('/uploads/images', express.static('uploads/images')); // <-- TAMBAHKAN BARIS INI
 
 app.use('/api/users', userRoutes);
-app.use('/api/files', fileRoutes); // <-- 2. Gunakan rute file
+app.use('/api/files', fileRoutes); 
 
 module.exports = app;
