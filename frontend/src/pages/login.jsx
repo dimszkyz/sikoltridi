@@ -17,8 +17,10 @@ const Login = () => {
       });
 
       if (res.data.success) {
-        alert("Login berhasil!");
-        navigate("/home"); // Redirect ke halaman utama
+        const user = res.data.user;
+        localStorage.setItem("user", JSON.stringify(user));
+        alert(`Selamat datang, ${user.username}!`);
+        navigate("/");
       } else {
         alert("Username atau password salah!");
       }

@@ -1,9 +1,10 @@
-// src/components/Navbar.jsx
-import React, { useState } from "react";
+// src/components/navbar.jsx
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   const navItems = [
@@ -12,11 +13,24 @@ const Navbar = () => {
     { to: "#PartPlanning", label: "Planning" },
     { to: "#PartOrganizing", label: "Organizing" },
     { to: "#actuating", label: "Actuating" },
-    // khusus Controlling → pindah halaman
+    // Khusus Controlling → pindah halaman
     { to: "/controlling", label: "Controlling", isRoute: true },
   ];
 
-  // smooth scroll utk anchor di halaman Home
+  // Ambil user dari localStorage saat komponen pertama kali dimuat
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, []);
+
+  // Logout → hapus data user
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login");
+  };
+
+  // Smooth scroll untuk anchor di halaman yang sama
   const smoothScrollTo = (hash) => {
     const el = document.querySelector(hash);
     if (el) {
@@ -29,18 +43,18 @@ const Navbar = () => {
     setOpen(false);
 
     if (item.isRoute) {
-      // Controlling → halaman baru
+      // pindah halaman
       navigate(item.to);
       return;
     }
-    // selain itu → smooth scroll
+    // scroll ke section
     smoothScrollTo(item.to);
   };
 
   return (
     <header className="w-full fixed top-0 left-0 z-50 flex justify-center py-3">
       <nav className="w-[92%] max-w-7xl bg-white/90 backdrop-blur-md rounded-full shadow-lg px-5 md:px-8 py-2.5 flex items-center justify-between">
-        {/* Brand */}
+        {/* Brand / Logo */}
         <a
           href="#home"
           onClick={(e) => {
@@ -52,7 +66,7 @@ const Navbar = () => {
           Sikoltridi
         </a>
 
-        {/* Desktop menu */}
+        {/* Menu desktop */}
         <ul className="hidden md:flex items-center gap-8 text-slate-700">
           {navItems.map((item) => (
             <li key={item.label}>
@@ -67,14 +81,36 @@ const Navbar = () => {
           ))}
         </ul>
 
-        {/* Login + hamburger */}
-        <div className="flex items-center gap-2">
-          <a href="/login" className="order-1">
-            <button className="px-4 md:px-5 py-1.5 md:py-2 rounded-full bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition shadow">
-              Login
-            </button>
-          </a>
+        {/* Tombol kanan (Login / Profil) */}
+        <div className="flex items-center gap-3">
+          {user ? (
+            <div className="flex items-center gap-3">
+              <div className="flex items-center bg-blue-50 px-3 py-1.5 rounded-full">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                  alt="user"
+                  className="w-6 h-6 mr-2"
+                />
+                <span className="text-sm font-medium text-slate-800">
+                  {user.username} ({user.level})
+                </span>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="text-sm text-red-500 hover:underline"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <a href="/login" className="order-1">
+              <button className="px-4 md:px-5 py-1.5 md:py-2 rounded-full bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition shadow">
+                Login
+              </button>
+            </a>
+          )}
 
+          {/* Hamburger menu (mobile) */}
           <button
             aria-label="Open menu"
             onClick={() => setOpen((v) => !v)}
@@ -96,10 +132,12 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile dropdown */}
+      {/* Menu dropdown mobile */}
       <div
         className={`md:hidden fixed left-1/2 -translate-x-1/2 top-[64px] w-[92%] max-w-7xl transition-all ${
-          open ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
+          open
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 -translate-y-2 pointer-events-none"
         }`}
       >
         <div className="bg-white/95 backdrop-blur-md shadow-lg rounded-2xl p-3">

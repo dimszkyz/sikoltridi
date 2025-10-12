@@ -1,16 +1,49 @@
 // backend/src/controllers/userController.js
-const db = require('../config/database'); // pastikan kamu punya file koneksi db
+const db = require("../config/database"); // pastikan kamu punya file koneksi db
 // Atau sesuaikan dengan lokasi file koneksi database kamu
 
 const getAllUsers = (req, res) => {
   const users = [
-    { id: 1, name: 'Ammaar' },
-    { id: 2, name: 'Pengguna Dua' },
+    { id: 1, name: "Ammaar" },
+    { id: 2, name: "Pengguna Dua" },
   ];
   res.json({
-    message: 'Data user berhasil diambil',
+    message: "Data user berhasil diambil",
     data: users,
   });
+};
+
+const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password)
+    return res
+      .status(400)
+      .json({ success: false, msg: "Username dan password wajib diisi" });
+
+  try {
+    const [rows] = await db.query(
+      "SELECT id_user AS id, username, level FROM user WHERE username = ? AND password = ?",
+      [username, password]
+    );
+
+    if (rows.length === 0)
+      return res
+        .status(401)
+        .json({ success: false, msg: "Username atau password salah" });
+
+    const user = rows[0];
+
+    // Simpan data login sederhana (tanpa JWT dulu)
+    res.json({
+      success: true,
+      msg: "Login berhasil",
+      user, // kirim data user agar bisa ditampilkan di frontend
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, msg: "Terjadi kesalahan server" });
+  }
 };
 
 const ajukanAkun = async (req, res) => {
@@ -20,12 +53,15 @@ const ajukanAkun = async (req, res) => {
   const level = "user";
 
   if (!username || !password) {
-    return res.status(400).json({ msg: "Username dan password tidak boleh kosong" });
+    return res
+      .status(400)
+      .json({ msg: "Username dan password tidak boleh kosong" });
   }
 
   try {
     console.log("➡ Menjalankan INSERT ke database...");
-    const insertSql = "INSERT INTO pengajuan_akun (username, password, level) VALUES (?, ?, ?)";
+    const insertSql =
+      "INSERT INTO pengajuan_akun (username, password, level) VALUES (?, ?, ?)";
     const [result] = await db.query(insertSql, [username, password, level]); // ✅ PAKAI AWAIT
 
     console.log("✅ Data berhasil masuk:", result);
@@ -52,13 +88,19 @@ const approveAkun = async (req, res) => {
   const { role } = req.body; // TERIMA ROLE DARI FRONTEND
 
   try {
-    const [rows] = await db.query("SELECT * FROM pengajuan_akun WHERE id = ?", [id]);
-    if (rows.length === 0) return res.status(404).json({ msg: "Data tidak ditemukan" });
+    const [rows] = await db.query("SELECT * FROM pengajuan_akun WHERE id = ?", [
+      id,
+    ]);
+    if (rows.length === 0)
+      return res.status(404).json({ msg: "Data tidak ditemukan" });
 
     const { username, password } = rows[0];
 
     // Insert ke user pakai role terpilih
-    await db.query("INSERT INTO user (username, password, level) VALUES (?, ?, ?)", [username, password, role]);
+    await db.query(
+      "INSERT INTO user (username, password, level) VALUES (?, ?, ?)",
+      [username, password, role]
+    );
 
     await db.query("DELETE FROM pengajuan_akun WHERE id = ?", [id]);
 
@@ -85,4 +127,5 @@ module.exports = {
   rejectAkun,
   approveAkun,
   getPengajuanAkunList,
+  loginUser,
 };
