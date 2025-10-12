@@ -25,3 +25,13 @@ exports.createKuesioner = async (req, res) => {
     res.status(500).json({ success: false, message: "Gagal menyimpan kuesioner" });
   }
 };
+exports.getAllKuesioner = async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM kuesioner ORDER BY id ASC");
+    res.json(rows);
+  } catch (err) {
+    console.error("getAllKuesioner error:", err);
+    res.status(500).json({ success: false, message: "Gagal mengambil data kuesioner" });
+  }
+};
+
