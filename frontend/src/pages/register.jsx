@@ -2,37 +2,37 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
-      // Nanti disesuaikan endpoint login API-mu
-      const res = await axios.post("http://localhost:5000/api/users/login", {
+      const res = await axios.post("http://localhost:5000/api/users/pengajuan-akun", {
         username,
         password,
       });
 
-      if (res.data.success) {
-        alert("Login berhasil!");
-        navigate("/home"); // Redirect ke halaman utama
-      } else {
-        alert("Username atau password salah!");
-      }
-    } catch (error) {
-      alert("Terjadi kesalahan saat login");
+      alert(res.data.msg || "Pengajuan akun berhasil, tunggu persetujuan admin!");
+      navigate("/login");
+    } catch (err) {
+      alert(err.response?.data?.msg || "Terjadi kesalahan saat mengajukan akun");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Daftar Akun</h2>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleRegister} className="space-y-4">
           <div>
             <label className="block mb-1 text-gray-600">Username</label>
             <input
@@ -59,20 +59,21 @@ const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
+            disabled={loading}
           >
-            Login
+            {loading ? "Mengirim..." : "Ajukan Akun"}
           </button>
         </form>
 
-        {/* Tombol Daftar Akun */}
+        {/* Kembali ke login */}
         <div className="text-center mt-4">
-          <p className="text-gray-600">Belum punya akun?</p>
+          <p className="text-gray-600">Sudah punya akun?</p>
           <button
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/login")}
             className="text-blue-600 hover:underline"
           >
-            Daftar Akun
+            Kembali ke Login
           </button>
         </div>
       </div>
@@ -80,4 +81,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

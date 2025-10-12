@@ -1,9 +1,8 @@
 // backend/src/controllers/userController.js
+const db = require('../config/database'); // pastikan kamu punya file koneksi db
+// Atau sesuaikan dengan lokasi file koneksi database kamu
 
-// Fungsi ini akan dipanggil saat ada permintaan ke GET /api/users/
 const getAllUsers = (req, res) => {
-  // Logika untuk mengambil data user dari database akan ada di sini
-  // Untuk sekarang, kita kirim data dummy
   const users = [
     { id: 1, name: 'Ammaar' },
     { id: 2, name: 'Pengguna Dua' },
@@ -14,6 +13,76 @@ const getAllUsers = (req, res) => {
   });
 };
 
+const ajukanAkun = async (req, res) => {
+  console.log("🔥 Menerima request pengajuan akun:", req.body);
+
+  const { username, password } = req.body;
+  const level = "user";
+
+  if (!username || !password) {
+    return res.status(400).json({ msg: "Username dan password tidak boleh kosong" });
+  }
+
+  try {
+    console.log("➡ Menjalankan INSERT ke database...");
+    const insertSql = "INSERT INTO pengajuan_akun (username, password, level) VALUES (?, ?, ?)";
+    const [result] = await db.query(insertSql, [username, password, level]); // ✅ PAKAI AWAIT
+
+    console.log("✅ Data berhasil masuk:", result);
+    return res.status(201).json({ msg: "Pengajuan akun berhasil disimpan!" });
+  } catch (err) {
+    console.error("❌ Gagal insert:", err);
+    return res.status(500).json({ msg: "Gagal mengajukan akun", error: err });
+  }
+};
+
+// GET semua pengajuan akun
+const getPengajuanAkunList = async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT * FROM pengajuan_akun");
+    res.status(200).json({ data: rows });
+  } catch (err) {
+    res.status(500).json({ msg: "Gagal mengambil data", error: err });
+  }
+};
+
+// APPROVE akun → pindahkan data ke tabel `users` lalu hapus dari `pengajuan_akun`
+const approveAkun = async (req, res) => {
+  const id = req.params.id;
+  const { role } = req.body; // TERIMA ROLE DARI FRONTEND
+
+  try {
+    const [rows] = await db.query("SELECT * FROM pengajuan_akun WHERE id = ?", [id]);
+    if (rows.length === 0) return res.status(404).json({ msg: "Data tidak ditemukan" });
+
+    const { username, password } = rows[0];
+
+    // Insert ke user pakai role terpilih
+    await db.query("INSERT INTO user (username, password, level) VALUES (?, ?, ?)", [username, password, role]);
+
+    await db.query("DELETE FROM pengajuan_akun WHERE id = ?", [id]);
+
+    res.status(200).json({ msg: `Akun berhasil disetujui sebagai ${role}!` });
+  } catch (err) {
+    res.status(500).json({ msg: "Gagal approve akun", error: err });
+  }
+};
+
+// REJECT akun → langsung hapus dari pengajuan_akun
+const rejectAkun = async (req, res) => {
+  const id = req.params.id;
+  try {
+    await db.query("DELETE FROM pengajuan_akun WHERE id = ?", [id]);
+    res.status(200).json({ msg: "Akun ditolak dan dihapus!" });
+  } catch (err) {
+    res.status(500).json({ msg: "Gagal menghapus data", error: err });
+  }
+};
+
 module.exports = {
   getAllUsers,
+  ajukanAkun,
+  rejectAkun,
+  approveAkun,
+  getPengajuanAkunList,
 };
