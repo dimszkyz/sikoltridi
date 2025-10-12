@@ -24,7 +24,7 @@ const SidebarAdmin = () => {
 
   const navLinks = [
     { to: "/admin/admin", icon: FaTachometerAlt, text: "Dashboard" },
-    { to: "/admin/users", icon: FaUsers, text: "Manajemen User" },
+    { to: "/admin/pengajuan-akun", icon: FaUsers, text: "Manajemen User" },
     { to: "/admin/files", icon: FaFileAlt, text: "Manajemen File" },
     { to: "/admin/planning", icon: FaClipboardList, text: "Planning" },
     { to: "/admin/organizing", icon: FaProjectDiagram, text: "Organizing" }, // ✅ menu baru

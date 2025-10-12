@@ -35,10 +35,6 @@ app.get('/', (_req, res) => {
   res.send('Selamat Datang di API SIKOLTRIDI!');
 });
 
-// === ROUTE MODULAR ===
-const userRoutes = require('./routes/userRoutes');
-const fileRoutes = require('./routes/fileRoutes');
-
 app.use('/uploads/files', express.static('uploads/files'));
 app.use('/uploads/images', express.static('uploads/images'));
 
