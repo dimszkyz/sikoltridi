@@ -14,6 +14,7 @@ import {
   FaVideo,
   FaCamera,
   FaProjectDiagram, // ikon baru untuk Organizing
+  FaClipboardCheck,
 } from "react-icons/fa";
 
 const SidebarAdmin = () => {
@@ -27,7 +28,8 @@ const SidebarAdmin = () => {
     { to: "/admin/pengajuan-akun", icon: FaUsers, text: "Manajemen User" },
     { to: "/admin/files", icon: FaFileAlt, text: "Manajemen File" },
     { to: "/admin/planning", icon: FaClipboardList, text: "Planning" },
-    { to: "/admin/organizing", icon: FaProjectDiagram, text: "Organizing" }, // ✅ menu baru
+    { to: "/admin/organizing", icon: FaProjectDiagram, text: "Organizing" },
+    { to: "/admin/controlling", icon: FaClipboardCheck, text: "Controlling" }, // ✅ menu baru
   ];
 
   const handleLogout = () => {
@@ -52,28 +54,33 @@ const SidebarAdmin = () => {
       shadow-2xl ring-1 ring-slate-700/40 transition-all duration-300`}
     >
       {/* === Brand / Toggle === */}
-      <div className="flex items-center justify-between px-4 py-4 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl bg-indigo-500/20 grid place-items-center ring-1 ring-indigo-400/30">
-            <span className="font-black text-indigo-300">Si</span>
-          </div>
-          {!collapsed && (
-            <div>
-              <p className="text-lg font-semibold tracking-wide">Sikoltridi</p>
-              <p className="text-xs text-slate-400 -mt-1">Admin Panel</p>
-            </div>
-          )}
-        </div>
-
-        <button
-          onClick={() => setCollapsed((v) => !v)}
-          className="text-slate-300/80 hover:text-white rounded-lg p-2 transition"
-          title={collapsed ? "Expand" : "Collapse"}
-          aria-label={collapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
-        >
-          {collapsed ? <FaBars /> : <FaChevronLeft />}
-        </button>
+<div
+  className={`flex items-center ${
+    collapsed ? "justify-end" : "justify-between"
+  } px-4 py-4 border-b border-white/5`}
+>
+  {/* Tampilkan logo dan teks hanya saat sidebar tidak collapsed */}
+  {!collapsed && (
+    <div className="flex items-center gap-3">
+      <div className="h-9 w-9 rounded-xl bg-indigo-500/20 grid place-items-center ring-1 ring-indigo-400/30">
+        <span className="font-black text-indigo-300">Si</span>
       </div>
+      <div>
+        <p className="text-lg font-semibold tracking-wide">Sikoltridi</p>
+        <p className="text-xs text-slate-400 -mt-1">Admin Panel</p>
+      </div>
+    </div>
+  )}
+
+  <button
+    onClick={() => setCollapsed((v) => !v)}
+    className="text-slate-300/80 hover:text-white rounded-lg p-2 transition"
+    title={collapsed ? "Expand" : "Collapse"}
+    aria-label={collapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
+  >
+    {collapsed ? <FaBars /> : <FaChevronLeft />}
+  </button>
+</div>
 
       {/* === Navigation === */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">

@@ -12,7 +12,8 @@ import AddPlanning from "./pages/admin/AddPlanning";
 import Planning from "./pages/admin/Planning";
 import Organizing from "./pages/admin/Organizing";
 import AddOrganizing from "./pages/admin/AddOrganizing";
-import PartControlling from "./pages/PartControlling"; // <-- 1. Impor komponen baru
+import PartControlling from "./pages/PartControlling";
+import ControllingAdmin from "./pages/admin/Controlling"; // <-- 1. Impor komponen baru
 
 
 function App() {
@@ -30,7 +31,8 @@ function App() {
         <Route path="/admin/planning" element={<Planning />} /> 
         <Route path="/admin/organizing" element={<Organizing />} />
         <Route path="/admin/organizing/add" element={<AddOrganizing />} />
-        <Route path="/controlling" element={<PartControlling />} /> {/* <-- 2. Tambahkan route baru */}
+        <Route path="/controlling" element={<PartControlling />} />
+        <Route path="/admin/controlling" element={<ControllingAdmin />} /> {/* <-- 2. Tambahkan route baru */}
       </Routes>
     </Router>
   );

@@ -1,11 +1,15 @@
-// src/components/navbar.jsx
+// src/components/Navbar.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Tutup menu mobile otomatis setiap rute berubah (hindari overlay nge-blok klik)
+  useEffect(() => { setOpen(false); }, [location.pathname, location.hash]);
 
   const navItems = [
     { to: "#home", label: "Home" },
@@ -31,6 +35,7 @@ const Navbar = () => {
   };
 
   // Smooth scroll untuk anchor di halaman yang sama
+  // scroll halus hanya dipakai bila sedang di halaman home
   const smoothScrollTo = (hash) => {
     const el = document.querySelector(hash);
     if (el) {
@@ -38,9 +43,13 @@ const Navbar = () => {
     }
   };
 
+  const goHomeWithHash = (hash) => {
+    // Navigasi ke '/' plus hash (contoh: '/#partfile')
+    navigate({ pathname: "/", hash: hash.slice(1) }); // hash tanpa '#'
+  };
+
   const handleClick = (e, item) => {
     e.preventDefault();
-    setOpen(false);
 
     if (item.isRoute) {
       // pindah halaman
@@ -49,6 +58,15 @@ const Navbar = () => {
     }
     // scroll ke section
     smoothScrollTo(item.to);
+
+    const onHome = location.pathname === "/" || location.pathname === "";
+    if (onHome) {
+      // Bila sudah di home → scroll lokal
+      smoothScrollTo(item.to);
+    } else {
+      // Bila sedang di /controlling (atau halaman lain) → pindah ke home + hash
+      goHomeWithHash(item.to);
+    }
   };
 
   return (
@@ -56,10 +74,14 @@ const Navbar = () => {
       <nav className="w-[92%] max-w-7xl bg-white/90 backdrop-blur-md rounded-full shadow-lg px-5 md:px-8 py-2.5 flex items-center justify-between">
         {/* Brand / Logo */}
         <a
-          href="#home"
+          href="/#home"
           onClick={(e) => {
             e.preventDefault();
-            smoothScrollTo("#home");
+            if (location.pathname === "/") {
+              smoothScrollTo("#home");
+            } else {
+              goHomeWithHash("#home");
+            }
           }}
           className="text-[22px] md:text-2xl font-semibold text-slate-800 select-none cursor-pointer"
         >
@@ -71,7 +93,7 @@ const Navbar = () => {
           {navItems.map((item) => (
             <li key={item.label}>
               <a
-                href={item.to}
+                href={item.isRoute ? item.to : `/${item.to}`} // hanya untuk SEO/hint; klik ditangani onClick
                 onClick={(e) => handleClick(e, item)}
                 className="font-medium transition hover:text-blue-600 cursor-pointer"
               >
@@ -144,7 +166,7 @@ const Navbar = () => {
           {navItems.map((item) => (
             <a
               key={item.label}
-              href={item.to}
+              href={item.isRoute ? item.to : `/${item.to}`}
               onClick={(e) => handleClick(e, item)}
               className="block px-3 py-2 rounded-xl font-medium text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition cursor-pointer"
             >
