@@ -22,6 +22,8 @@ app.use('/uploads/planning', express.static(path.join(__dirname, '../uploads/pla
 app.use('/uploads/organizing', express.static(path.join(__dirname, '../uploads/organizing')));
 // TAMBAHKAN baris ini untuk mediavideo
 app.use('/uploads/mediavideo', express.static(path.join(__dirname, '../uploads/mediavideo')));
+app.use('/uploads/video', express.static(path.join(__dirname, '../uploads/video')));
+app.use('/uploads/video/thumb', express.static(path.join(__dirname, '../uploads/video/thumb')));
 
 
 // === IMPORT ROUTES ===
@@ -31,6 +33,7 @@ const planningRoutes = require('./routes/planning.routes');
 const organizingRoutes = require('./routes/organizing.routes');
 const kuesionerRoutes = require('./routes/kuesioner.routes');
 const videoRoutes = require('./routes/videoRoutes'); // IMPORT video routes
+const videoAdminRoutes = require('./routes/videoAdminRoutes');
 
 
 // === Default Welcome Route ===
@@ -45,6 +48,7 @@ app.use('/api/planning', planningRoutes);
 app.use('/api/organizing', organizingRoutes);
 app.use('/api/kuesioner', kuesionerRoutes);
 app.use('/api/videos', videoRoutes); // GUNAKAN video routes dengan prefix /api
+app.use('/api/video', videoAdminRoutes);
 
 
 // === Error Handling ===

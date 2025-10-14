@@ -15,6 +15,7 @@ import AddOrganizing from "./pages/admin/AddOrganizing";
 import PartControlling from "./pages/PartControlling";
 import ControllingAdmin from "./pages/admin/Controlling"; // <-- 1. Impor komponen baru
 import DetailVideo from "./pages/DetailVideo";
+import Video from "./pages/admin/video.jsx";
 
 
 function App() {
@@ -34,7 +35,8 @@ function App() {
         <Route path="/admin/organizing" element={<Organizing />} />
         <Route path="/admin/organizing/add" element={<AddOrganizing />} />
         <Route path="/controlling" element={<PartControlling />} />
-        <Route path="/admin/controlling" element={<ControllingAdmin />} /> {/* <-- 2. Tambahkan route baru */}
+        <Route path="/admin/controlling" element={<ControllingAdmin />} />
+        <Route path="/admin/actuating/video" element={<Video />} /> {/* <-- 2. Tambahkan route baru */}
       </Routes>
     </Router>
   );

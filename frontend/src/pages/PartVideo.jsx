@@ -1,88 +1,111 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-// Komponen untuk fallback jika thumbnail error
-const FallbackThumbnail = () => (
-  <div className="w-full h-48 bg-gray-300 dark:bg-gray-700 flex items-center justify-center rounded-t-lg">
-    <svg className="w-12 h-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.55a2 2 0 01.45 2.42l-2.42 4.84A2 2 0 0115.58 18H8.42a2 2 0 01-1.9-2.74l2.42-4.84A2 2 0 0110.45 8H13a2 2 0 012 2v0z"></path>
-    </svg>
-  </div>
-);
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
-const PartVideo = () => {
+export default function PartVideo() {
+  const [activeTab, setActiveTab] = useState("video");
   const [videos, setVideos] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const getVideos = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/videos');
-        setVideos(response.data);
-      } catch (err) {
-        console.error("Gagal mengambil data video:", err);
-        setError('Tidak dapat memuat video. Silakan coba lagi nanti.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (activeTab === "video") fetchVideos();
+  }, [activeTab]);
 
-    getVideos();
-  }, []);
+  const fetchVideos = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/api/video`);
+      setVideos(res.data || []);
+    } catch (err) {
+      console.error("Gagal mengambil video:", err);
+    }
+  };
 
-  if (loading) {
-    return <div className="text-center py-10">Memuat video...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center py-10 text-red-500">{error}</div>;
-  }
+  const handleDetail = (id) => {
+    navigate(`/actuating/video/${id}`);
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white border-b-2 border-blue-500 pb-2">
-        Galeri Video
-      </h1>
-      {videos.length === 0 ? (
-        <p className="text-center text-gray-500 dark:text-gray-400">Belum ada video yang tersedia.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {videos.map((video) => (
-            <Link 
-              to={`/video/${video.id}`} 
-              key={video.id} 
-              className="group bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col"
-            >
-              <div className="relative">
-                <img
-                  src={video.thumbnail}
-                  alt={`Thumbnail untuk ${video.judul}`}
-                  className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
-                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                />
-                 {/* Fallback jika gambar gagal dimuat */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                    <img src={video.thumbnail} alt={`Thumbnail untuk ${video.judul}`} className="w-full h-48 object-cover" style={{ display: 'none' }} onError={(e) => e.currentTarget.parentElement.insertAdjacentHTML('afterbegin', '<div class="w-full h-48 bg-gray-300 dark:bg-gray-700 flex items-center justify-center rounded-t-lg"><svg class="w-12 h-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.55a2 2 0 01.45 2.42l-2.42 4.84A2 2 0 0115.58 18H8.42a2 2 0 01-1.9-2.74l2.42-4.84A2 2 0 0110.45 8H13a2 2 0 012 2v0z"></path></svg></div>')} />
-                </div>
-                <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd"></path>
-                  </svg>
-                </div>
-              </div>
-              <div className="p-4 flex-grow">
-                <h2 className="font-bold text-lg text-gray-800 dark:text-white truncate" title={video.judul}>
-                  {video.judul}
-                </h2>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+    <section className="min-h-screen bg-white py-12 px-6 md:px-12">
+      <div className="max-w-5xl mx-auto text-center">
+        {/* === Judul Section === */}
+        <h2 className="text-3xl md:text-4xl font-semibold text-slate-800 mb-3">
+          Actuating
+        </h2>
+        <div className="h-1 w-16 bg-blue-500 mx-auto mb-8 rounded-full"></div>
 
-export default PartVideo;
+        {/* === Toggle Tabs === */}
+        <div className="flex justify-center mb-10">
+          <div className="bg-gray-100 rounded-full p-1 flex space-x-1">
+            <button
+              onClick={() => setActiveTab("video")}
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                activeTab === "video"
+                  ? "bg-blue-500 text-white shadow"
+                  : "text-gray-600 hover:text-blue-600"
+              }`}
+            >
+              Video
+            </button>
+            <button
+              onClick={() => setActiveTab("foto")}
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                activeTab === "foto"
+                  ? "bg-blue-500 text-white shadow"
+                  : "text-gray-600 hover:text-blue-600"
+              }`}
+            >
+              Foto
+            </button>
+          </div>
+        </div>
+
+        {/* === Konten === */}
+        {activeTab === "video" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+            {videos.length > 0 ? (
+              videos.map((vid) => (
+                <div
+                  key={vid.id}
+                  onClick={() => handleDetail(vid.id)}
+                  className="w-full max-w-sm bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition"
+                >
+                  {/* Thumbnail */}
+                  <div className="relative w-full aspect-video bg-gray-900 flex items-center justify-center">
+                    {vid.thumbnail ? (
+                      <img
+                        src={`${API_BASE}/uploads/video/thumb/${vid.thumbnail}`}
+                        alt={vid.judul}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="text-gray-400 text-sm">Tidak ada thumbnail</div>
+                    )}
+                    <div className="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition flex items-center justify-center text-white text-lg font-semibold">
+                      Lihat Detail
+                    </div>
+                  </div>
+
+                  {/* Info */}
+                  <div className="p-4 text-left">
+                    <h3 className="font-semibold text-slate-800 mb-1 line-clamp-1">
+                      {vid.judul}
+                    </h3>
+                    <p className="text-sm text-slate-600 line-clamp-2">
+                      {vid.keterangan || "-"}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">Belum ada video yang diunggah.</p>
+            )}
+          </div>
+        ) : (
+          <div className="text-gray-500">Halaman foto akan datang...</div>
+        )}
+      </div>
+    </section>
+  );
+}
