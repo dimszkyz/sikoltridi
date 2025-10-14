@@ -49,7 +49,7 @@ const getVideoById = async (req, res) => {
     const baseUrl = `${req.protocol}://${req.get('host')}`;
     
     // Buat URL lengkap
-    video.media = `${baseUrl}/uploads/mediavideo/${video.media}`;
+    video.media = `${baseUrl}/uploads/video/${video.media}`;
     video.thumbnail = `${baseUrl}/uploads/images/${video.thumbnail}`;
 
     res.status(200).json(video);
