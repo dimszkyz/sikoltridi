@@ -31,7 +31,7 @@ const Navbar = () => {
     { to: "#partfile", label: "File" },
     { to: "#PartPlanning", label: "Planning" },
     { to: "#PartOrganizing", label: "Organizing" },
-    { to: "#actuating", label: "Actuating" },
+    { to: "#PartMedia", label: "Actuating" },
     { to: "/controlling", label: "Controlling", isRoute: true },
   ];
 
