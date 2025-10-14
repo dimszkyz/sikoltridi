@@ -7,6 +7,7 @@ import logo from "../assets/img/output-onlinepngtools.png";
 import PartPlanning from "./PartPlanning";
 import PartOrganizing from "./PartOrganizing";
 import ScrollTopButton from "../components/ScrollTopButton";
+import PartVideo from "./PartVideo";
 
 /* ===== Variants yang smooth ===== */
 const container = {
@@ -128,6 +129,9 @@ const Home = () => {
       </section>
       <section id="PartOrganizing">
         <PartOrganizing />
+      </section>
+      <section id="PartMedia">
+        <PartVideo/>
       </section>
 
       {/* Footer copyright */}
