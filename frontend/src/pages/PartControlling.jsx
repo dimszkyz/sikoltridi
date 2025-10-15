@@ -172,29 +172,6 @@ function QuestionTable({
 }
 
 function SuccessView({ respondent, answers, onAgain }) {
-  // kecil2 buat unduh CSV ringkasan
-  const downloadCSV = () => {
-    const toRow = (obj) =>
-      Object.entries(obj)
-        .map(([k, v]) => `"${String(k).replace(/"/g, '""')}"`)
-        .join(",");
-    const rows = [];
-    rows.push(["Field", "Value"].join(","));
-    rows.push(["Nama", respondent.nama].join(","));
-    rows.push(["Jabatan", respondent.jabatan].join(","));
-    rows.push(["Lembaga", respondent.lembaga].join(","));
-    rows.push(["-----", "-----"].join(","));
-    Object.entries(answers).forEach(([k, v]) => rows.push([k, v || ""].join(",")));
-
-    const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `ringkasan-kuesioner-${respondent.nama || "responden"}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <section className="max-w-3xl mx-auto px-6 md:px-8 py-10">
       <div className="rounded-2xl border border-emerald-200 bg-emerald-50 shadow-sm p-8 text-center">
@@ -205,7 +182,7 @@ function SuccessView({ respondent, answers, onAgain }) {
         </div>
         <h3 className="text-2xl font-bold text-emerald-800">Terima kasih! Kuesioner berhasil terkirim.</h3>
         <p className="mt-2 text-emerald-800/80">
-          Data Anda telah tercatat. Anda dapat mencetak ringkasan atau mengunduh CSV untuk arsip.
+          Data Anda telah berhasil kami catat.
         </p>
 
         <div className="mt-6 text-left bg-white rounded-xl border p-5">
@@ -218,18 +195,6 @@ function SuccessView({ respondent, answers, onAgain }) {
         </div>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <button
-            onClick={() => window.print()}
-            className="px-5 py-2 rounded-lg bg-slate-800 text-white hover:bg-slate-900"
-          >
-            Cetak Ringkasan
-          </button>
-          <button
-            onClick={downloadCSV}
-            className="px-5 py-2 rounded-lg bg-white text-slate-800 border hover:bg-slate-50"
-          >
-            Unduh CSV
-          </button>
           <a
             href="/"
             className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
@@ -457,7 +422,7 @@ export default function PartControlling() {
           />
         )}
       </main>
-       {/* Footer copyright */}
+      {/* Footer copyright */}
       <footer className="bg-white text-black text-center py-4 mt-10 border-t border-gray-200">
         <p className="text-sm tracking-wide">
           © Copyright <span className="font-bold">APR 2024</span> All Rights Reserved
