@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const DetailVideo = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [video, setVideo] = useState(null);
   const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  // Get user data from localStorage once when the component loads
+  const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
     const fetchVideoAndComments = async () => {
       try {
         setLoading(true);
-        
         const videoResponse = await axios.get(`http://localhost:5000/api/videos/${id}`);
         setVideo(videoResponse.data);
 
         const commentsResponse = await axios.get(`http://localhost:5000/api/komentar/${id}`);
         setComments(commentsResponse.data);
-
       } catch (err) {
         console.error("Error fetching details:", err);
         setError('Gagal memuat detail video atau komentar.');
@@ -30,6 +34,32 @@ const DetailVideo = () => {
 
     fetchVideoAndComments();
   }, [id]);
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim()) return;
+
+    // More robust check: Ensure user object and its id exist
+    if (!user || !user.id_user) {
+      alert('Anda harus login untuk berkomentar.');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/komentar', {
+        id_video: id,
+        id_user: user.id_user,
+        isi_komentar: newComment,
+      });
+
+      setComments([response.data, ...comments]);
+      setNewComment('');
+    } catch (err) {
+      console.error('Gagal mengirim komentar:', err);
+      alert('Terjadi kesalahan saat mengirim komentar.');
+    }
+  };
 
   if (loading) {
     return (
@@ -54,24 +84,17 @@ const DetailVideo = () => {
       </div>
     );
   }
-  
+
   const formattedDate = new Date(video.tanggal).toLocaleDateString('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+    day: 'numeric', month: 'long', year: 'numeric',
   });
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div className="bg-gray-100 dark:bg-gray-900 min-h-screen py-8 px-4 sm:px-6 lg:px-8 pb-24">
       <div className="max-w-4xl mx-auto">
         {/* Kontainer Video Player */}
         <div className="bg-black rounded-lg shadow-2xl overflow-hidden mb-6">
-          <video
-            className="w-full aspect-video"
-            controls
-            poster={video.thumbnail}
-            key={video.id}
-          >
+          <video className="w-full aspect-video" controls poster={video.thumbnail} key={video.id}>
             <source src={video.media} type="video/mp4" />
             Browser Anda tidak mendukung tag video.
           </video>
@@ -100,7 +123,6 @@ const DetailVideo = () => {
             {comments.length > 0 ? (
               comments.map((comment) => (
                 <div key={comment.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow">
-                  {/* Perbarui baris ini untuk menampilkan level */}
                   <p className="font-semibold text-gray-800 dark:text-gray-200">
                     {comment.username} <span className="text-xs font-normal text-gray-500 dark:text-gray-400">({comment.level})</span>
                   </p>
@@ -115,6 +137,30 @@ const DetailVideo = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Kotak Input Komentar Mengambang */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 p-4 border-t border-gray-200 dark:border-gray-700 shadow-lg z-10">
+        <form onSubmit={handleCommentSubmit} className="max-w-4xl mx-auto flex items-center space-x-3">
+          <textarea
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            // Dynamic placeholder
+            placeholder={user ? `Tulis komentar sebagai ${user.username}...` : 'Login untuk menulis komentar...'}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white transition"
+            rows="1"
+            // Disable input if not logged in
+            disabled={!user}
+          />
+          <button
+            type="submit"
+            className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition disabled:bg-gray-400"
+            // Disable button if not logged in
+            disabled={!user}
+          >
+            Kirim
+          </button>
+        </form>
       </div>
     </div>
   );

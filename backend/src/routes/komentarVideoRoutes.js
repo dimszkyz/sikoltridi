@@ -1,9 +1,9 @@
 const express = require('express');
-// Pastikan nama controller yang dipanggil sudah benar
-const { getCommentsByVideoId } = require('../controllers/komentarVideoController');
+const { getCommentsByVideoId, addComment } = require('../controllers/komentarVideoController');
 
 const router = express.Router();
 
 router.get('/:id_video', getCommentsByVideoId);
+router.post('/', addComment); // <-- TAMBAHKAN RUTE BARU INI
 
 module.exports = router;
