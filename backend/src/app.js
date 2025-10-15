@@ -20,7 +20,6 @@ app.use('/uploads/files', express.static(path.join(__dirname, '../uploads/files'
 app.use('/uploads/images', express.static(path.join(__dirname, '../uploads/images')));
 app.use('/uploads/planning', express.static(path.join(__dirname, '../uploads/planning')));
 app.use('/uploads/organizing', express.static(path.join(__dirname, '../uploads/organizing')));
-// TAMBAHKAN baris ini untuk mediavideo
 app.use('/uploads/mediavideo', express.static(path.join(__dirname, '../uploads/mediavideo')));
 app.use('/uploads/video', express.static(path.join(__dirname, '../uploads/video')));
 app.use('/uploads/video/thumb', express.static(path.join(__dirname, '../uploads/video/thumb')));
@@ -32,8 +31,9 @@ const fileRoutes = require('./routes/fileRoutes');
 const planningRoutes = require('./routes/planning.routes');
 const organizingRoutes = require('./routes/organizing.routes');
 const kuesionerRoutes = require('./routes/kuesioner.routes');
-const videoRoutes = require('./routes/videoRoutes'); // IMPORT video routes
+const videoRoutes = require('./routes/videoRoutes');
 const videoAdminRoutes = require('./routes/videoAdminRoutes');
+const komentarVideoRoutes = require('./routes/komentarVideoRoutes'); // <-- TAMBAHKAN INI
 
 
 // === Default Welcome Route ===
@@ -47,8 +47,9 @@ app.use('/api/files', fileRoutes);
 app.use('/api/planning', planningRoutes);
 app.use('/api/organizing', organizingRoutes);
 app.use('/api/kuesioner', kuesionerRoutes);
-app.use('/api/videos', videoRoutes); // GUNAKAN video routes dengan prefix /api
+app.use('/api/videos', videoRoutes);
 app.use('/api/video', videoAdminRoutes);
+app.use('/api/komentar', komentarVideoRoutes); // <-- DAN INI
 
 
 // === Error Handling ===

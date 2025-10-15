@@ -3,39 +3,42 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const DetailVideo = () => {
-  const { id } = useParams(); // Mengambil 'id' dari URL, contoh: /video/1
+  const { id } = useParams();
   const [video, setVideo] = useState(null);
+  const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchVideo = async () => {
+    const fetchVideoAndComments = async () => {
       try {
         setLoading(true);
-        // Sesuaikan URL jika port atau host berbeda
-        const response = await axios.get(`http://localhost:5000/api/videos/${id}`);
-        setVideo(response.data);
+        
+        const videoResponse = await axios.get(`http://localhost:5000/api/videos/${id}`);
+        setVideo(videoResponse.data);
+
+        const commentsResponse = await axios.get(`http://localhost:5000/api/komentar/${id}`);
+        setComments(commentsResponse.data);
+
       } catch (err) {
-        console.error("Error fetching video details:", err);
-        setError('Gagal memuat detail video. Mungkin video tidak ditemukan.');
+        console.error("Error fetching details:", err);
+        setError('Gagal memuat detail video atau komentar.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchVideo();
-  }, [id]); // Jalankan effect ini setiap kali 'id' di URL berubah
+    fetchVideoAndComments();
+  }, [id]);
 
-  // Tampilan saat loading
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
-        <p className="text-xl text-gray-700 dark:text-gray-300">Memuat video...</p>
+        <p className="text-xl text-gray-700 dark:text-gray-300">Memuat video dan komentar...</p>
       </div>
     );
   }
 
-  // Tampilan jika ada error
   if (error) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -44,7 +47,6 @@ const DetailVideo = () => {
     );
   }
 
-  // Tampilan jika video tidak ditemukan
   if (!video) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -53,7 +55,6 @@ const DetailVideo = () => {
     );
   }
   
-  // Fungsi untuk memformat tanggal menjadi lebih mudah dibaca
   const formattedDate = new Date(video.tanggal).toLocaleDateString('id-ID', {
     day: 'numeric',
     month: 'long',
@@ -68,8 +69,8 @@ const DetailVideo = () => {
           <video
             className="w-full aspect-video"
             controls
-            poster={video.thumbnail} // Menampilkan thumbnail sebelum video diputar
-            key={video.id} // Key untuk me-remount komponen jika video berubah
+            poster={video.thumbnail}
+            key={video.id}
           >
             <source src={video.media} type="video/mp4" />
             Browser Anda tidak mendukung tag video.
@@ -77,20 +78,43 @@ const DetailVideo = () => {
         </div>
 
         {/* Kontainer Detail Informasi */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-2">
             {video.judul}
           </h1>
           <div className="flex items-center text-gray-500 dark:text-gray-400">
-            {/* Ikon Kalender (SVG dari Heroicons) */}
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
             </svg>
             <span>Diupload pada {formattedDate}</span>
           </div>
+          <p className="text-gray-700 dark:text-gray-300 mt-4">{video.keterangan}</p>
         </div>
         
-        {/* Anda bisa menambahkan bagian lain di sini, seperti deskripsi atau kolom komentar */}
+        {/* Kontainer Daftar Komentar */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Komentar ({comments.length})
+          </h2>
+          <div className="space-y-4">
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <div key={comment.id} className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg shadow">
+                  {/* Perbarui baris ini untuk menampilkan level */}
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">
+                    {comment.username} <span className="text-xs font-normal text-gray-500 dark:text-gray-400">({comment.level})</span>
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-2">
+                    {new Date(comment.tanggal).toLocaleString('id-ID')}
+                  </p>
+                  <p className="text-gray-700 dark:text-gray-300 break-words">{comment.isi_komentar}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400">Belum ada komentar.</p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
