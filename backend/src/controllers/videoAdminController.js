@@ -24,8 +24,8 @@ exports.addVideo = async (req, res) => {
 
     const tanggal = new Date().toISOString().split('T')[0];
     await db.query(
-      'INSERT INTO video (judul, media, thumbnail, tanggal) VALUES (?, ?, ?, ?)',
-      [judul, media, thumbnail || null, tanggal]
+      'INSERT INTO video (judul, keterangan, media, thumbnail, tanggal) VALUES (?, ?, ?, ?, ?)',
+      [judul, keterangan || '', media, thumbnail || null, tanggal]
     );
 
     res.status(201).json({ message: 'Video berhasil diunggah' });
@@ -34,6 +34,7 @@ exports.addVideo = async (req, res) => {
     res.status(500).json({ message: 'Gagal menyimpan video ke database' });
   }
 };
+
 
 exports.deleteVideo = async (req, res) => {
   const { id } = req.params;
