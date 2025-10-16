@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 14, 2025 at 02:44 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- Waktu pembuatan: 16 Okt 2025 pada 14.46
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `actuating_foto`
+-- Struktur dari tabel `actuating_foto`
 --
 
 CREATE TABLE `actuating_foto` (
@@ -36,10 +36,17 @@ CREATE TABLE `actuating_foto` (
   `uploaded_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `actuating_foto`
+--
+
+INSERT INTO `actuating_foto` (`id`, `title`, `image_file`, `deskripsi_image`, `upload_by`, `uploaded_at`) VALUES
+(1, 'dimas anjai mabarrrrrrr', 'coba.jpg', 'gsufgwyufguybfwjhhbfuigvuegfjkebvjksdgfuiwgfuibfjkwebfiwdgfui3wbjk', 6, '2025-10-16 11:09:56');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `file`
+-- Struktur dari tabel `file`
 --
 
 CREATE TABLE `file` (
@@ -51,13 +58,12 @@ CREATE TABLE `file` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `file`
+-- Dumping data untuk tabel `file`
 --
 
 INSERT INTO `file` (`id`, `title`, `image_file`, `pdf_file`, `uploaded_at`) VALUES
 (2, 'PANDUAN SIKADI', 'PANDUAN_SIKADI_A5_686b0efc38095.jpg', 'PANDUAN_SIKADI_A5_686b0efc382ba.pdf', '2025-07-07 07:04:12'),
 (3, 'MODUL SIKADI', 'MODUL_SIKADI_6881a119108a0.jpg', 'MODUL_SIKADI_6881a11910f80.pdf', '2025-07-24 09:57:29'),
-(4, 'coba', 'PANDUAN_SIKADI_A5_686b0efc382ba_2e0a3ba09b811e5a.png', 'PANDUAN_SIKADI_A5_686b0efc382ba_0b9ebac47885340e.pdf', '2025-10-11 17:11:02'),
 (5, 'b', 'PANDUAN_SIKADI_A5_686b0efc382ba_d94beffd013055e8.png', 'PANDUAN_SIKADI_A5_686b0efc382ba_d9c393fb99897f03.pdf', '2025-10-11 17:23:03'),
 (6, 'po', 'PANDUAN_SIKADI_A5_686b0efc382ba_1295877971b0aa21.png', 'PANDUAN_SIKADI_A5_686b0efc382ba_7822018c90df3c1a.pdf', '2025-10-11 17:39:53'),
 (7, 'p', 'MODUL_SIKADI_6881a11910f80_3e7c902024a6fd88.png', 'MODUL_SIKADI_6881a11910f80_c92ebf7fe41b3e24.pdf', '2025-10-12 13:08:17');
@@ -65,10 +71,31 @@ INSERT INTO `file` (`id`, `title`, `image_file`, `pdf_file`, `uploaded_at`) VALU
 -- --------------------------------------------------------
 
 --
--- Table structure for table `komentar`
+-- Struktur dari tabel `komentar_foto`
 --
 
-CREATE TABLE `komentar` (
+CREATE TABLE `komentar_foto` (
+  `id` int(11) NOT NULL,
+  `id_foto` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `isi_komentar` text NOT NULL,
+  `tanggal` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `komentar_foto`
+--
+
+INSERT INTO `komentar_foto` (`id`, `id_foto`, `id_user`, `isi_komentar`, `tanggal`) VALUES
+(1, 1, 4, 'gafsyuwydfvahsvdywfeydfavdhgsvdytwfydfdgsahgdfaysfdtfytfeyfdgfyefydtfayfdghfytefydfatyfdjcdhfihihajkhgeyufgsugfjhwgyufgy7gyugsfuhgsugfyeguywguygdsgygfyugfjhsvcnbxcvbs hcvuhvbjshbcjsbchgyugjhbsnc  s c scibvhujs cnsbhcbwugucn cbuiwisbnj  nvbivbsuh jh', '2025-10-16 11:25:09');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `komentar_video`
+--
+
+CREATE TABLE `komentar_video` (
   `id` int(11) NOT NULL,
   `id_video` int(11) DEFAULT NULL,
   `id_user` int(11) DEFAULT NULL,
@@ -76,10 +103,19 @@ CREATE TABLE `komentar` (
   `tanggal` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `komentar_video`
+--
+
+INSERT INTO `komentar_video` (`id`, `id_video`, `id_user`, `isi_komentar`, `tanggal`) VALUES
+(1, 4, 7, 'hjkgdugadgasudgaudguagdugayudgayudgqyugdyuagdjyagcjhavcjhsgcyuwgfyusvcjhsvcyucyugwuhcgweuhfgfwYUCGUACGYUWGCYUGUHVSCUGWYUCGSJHBCNVBCUHWVCUWVCJHVBCJHVSSCYVWCBNCBJHBSCVUHGCUYGSCJHSVSHGVYUEVFUSGJBSJHWEYUEFGYUWGFJBCJHSBCHJWHUSHJCBNJSBCNCBWHUFEGYUWUGFNZBCJHWCYUWEGFYUWBFNJSCBUHWGFCYUWGJHBCJHVWADCUHGEFYUVSVCUHWGFYGJNBJHGEUHGUVGUVGUDVJKASFUIGWFCBBFUGUDBBBUGSHDBXGHJGDFHBXNBSNGHDJHCBHSJHDBBCHVSJBBCNBHJASHBJANC BJBJKBAJKSBJKABDSJKABDMNABCJHXAGCUIWBKBJABCUWGUHABCNABCUHGWHUGAHJDBAJHDGQHUDGUADGJHADBJHQGUDGUADGJQHGDUIGEUIQHUIQHJKABCJHACBHWFGUWH', '2025-10-15 02:37:26'),
+(2, 4, 2, 'uasdgyuwefyugfjhgwufygwuyfgwueegfbjhfuwgefyuguwyefvjhwvcuwfy7fufvwjhfvhegdfuyg3wfguhfgeyugfgfjhebfjheyufgf8hfoiqwofhq9y29yr9hhwjkfh2uyr82yriu2hkrjhij298ry9hjkshfjgfyuegfyugwfy38yhfjkoifg38ui3bfjksghfig3huf3ihjkfhui3gt7y3tuihjkfh398ry987r82yruiwhrug2h8ry873yirwyerjhfjkwghfuiy38r4yiwehfksfkbjhbvkhvo3fhiwhjkjkehf982yriowuknjkfuiy', '2025-10-15 03:38:39'),
+(3, 4, 7, 'p', '2025-10-16 02:16:46');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kuesioner`
+-- Struktur dari tabel `kuesioner`
 --
 
 CREATE TABLE `kuesioner` (
@@ -115,7 +151,7 @@ CREATE TABLE `kuesioner` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `kuesioner`
+-- Dumping data untuk tabel `kuesioner`
 --
 
 INSERT INTO `kuesioner` (`id`, `nama_responden`, `jabatan`, `lembaga`, `a1`, `a2`, `a3`, `a4`, `a5`, `a6`, `a7`, `a8`, `a9`, `a10`, `b1`, `b2`, `b3`, `b4`, `b5`, `c1`, `c2`, `c3`, `c4`, `c5`, `d1`, `d2`, `d3`, `d4`, `submitted_at`) VALUES
@@ -125,7 +161,7 @@ INSERT INTO `kuesioner` (`id`, `nama_responden`, `jabatan`, `lembaga`, `a1`, `a2
 -- --------------------------------------------------------
 
 --
--- Table structure for table `organizing`
+-- Struktur dari tabel `organizing`
 --
 
 CREATE TABLE `organizing` (
@@ -137,7 +173,7 @@ CREATE TABLE `organizing` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `organizing`
+-- Dumping data untuk tabel `organizing`
 --
 
 INSERT INTO `organizing` (`id`, `title`, `image_file`, `pdf_file`, `uploaded_at`) VALUES
@@ -146,7 +182,7 @@ INSERT INTO `organizing` (`id`, `title`, `image_file`, `pdf_file`, `uploaded_at`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pengajuan_akun`
+-- Struktur dari tabel `pengajuan_akun`
 --
 
 CREATE TABLE `pengajuan_akun` (
@@ -158,17 +194,10 @@ CREATE TABLE `pengajuan_akun` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `pengajuan_akun`
---
-
-INSERT INTO `pengajuan_akun` (`id`, `username`, `password`, `level`, `status`, `created_at`) VALUES
-(8, 'kumar', 'kumar123', 'user', 'pending', '2025-10-12 11:40:07');
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `planning`
+-- Struktur dari tabel `planning`
 --
 
 CREATE TABLE `planning` (
@@ -180,7 +209,7 @@ CREATE TABLE `planning` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `planning`
+-- Dumping data untuk tabel `planning`
 --
 
 INSERT INTO `planning` (`id`, `title`, `image_file`, `pdf_file`, `uploaded_at`) VALUES
@@ -189,7 +218,7 @@ INSERT INTO `planning` (`id`, `title`, `image_file`, `pdf_file`, `uploaded_at`) 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user`
+-- Struktur dari tabel `user`
 --
 
 CREATE TABLE `user` (
@@ -200,7 +229,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `user`
+-- Dumping data untuk tabel `user`
 --
 
 INSERT INTO `user` (`id_user`, `username`, `password`, `level`) VALUES
@@ -208,14 +237,14 @@ INSERT INTO `user` (`id_user`, `username`, `password`, `level`) VALUES
 (2, 'tester01', 'Passw0rd!', 'user'),
 (3, 'tester01', 'Passw0rd!', 'user'),
 (4, 'tester01', 'Passw0rd!', 'user'),
-(5, 'kumar', 'kumar123', 'user'),
 (6, 'kumar', 'kumar123', 'admin'),
-(7, 'sadmin', 'sadmin123', 'superadmin');
+(7, 'sadmin', 'sadmin123', 'superadmin'),
+(8, 'kumar', 'kumar123', 'admin');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `video`
+-- Struktur dari tabel `video`
 --
 
 CREATE TABLE `video` (
@@ -228,148 +257,169 @@ CREATE TABLE `video` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `video`
+-- Dumping data untuk tabel `video`
 --
 
 INSERT INTO `video` (`id`, `media`, `thumbnail`, `tanggal`, `judul`, `keterangan`) VALUES
-(2, 'media_1760429849847_350622447.mp4', 'thumbnail_1760429850012_366957950.jpg', '2025-10-14', 'aaa', ''),
-(3, 'media_1760430904499_17473933.mp4', 'thumbnail_1760430907149_931536459.png', '2025-10-14', 'weq', '');
+(4, 'media_1760452578389_850431279.mp4', 'thumbnail_1760452578417_808930265.jpg', '2025-10-14', 'vgdtdtdt', 'buhgfuywgfyuwgfjhwegfyuwgu'),
+(6, 'media-1760588862412-849157805.mp4', 'thumbnail-1760588862723-393054288.png', '2025-10-16', 'nmnmmnmn', 'nnbnbnb');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `actuating_foto`
+-- Indeks untuk tabel `actuating_foto`
 --
 ALTER TABLE `actuating_foto`
   ADD PRIMARY KEY (`id`),
   ADD KEY `upload_by` (`upload_by`);
 
 --
--- Indexes for table `file`
+-- Indeks untuk tabel `file`
 --
 ALTER TABLE `file`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `komentar`
+-- Indeks untuk tabel `komentar_foto`
 --
-ALTER TABLE `komentar`
+ALTER TABLE `komentar_foto`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_foto` (`id_foto`),
+  ADD KEY `id_user` (`id_user`);
+
+--
+-- Indeks untuk tabel `komentar_video`
+--
+ALTER TABLE `komentar_video`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id_video` (`id_video`),
   ADD KEY `id_user` (`id_user`);
 
 --
--- Indexes for table `kuesioner`
+-- Indeks untuk tabel `kuesioner`
 --
 ALTER TABLE `kuesioner`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `organizing`
+-- Indeks untuk tabel `organizing`
 --
 ALTER TABLE `organizing`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `pengajuan_akun`
+-- Indeks untuk tabel `pengajuan_akun`
 --
 ALTER TABLE `pengajuan_akun`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `planning`
+-- Indeks untuk tabel `planning`
 --
 ALTER TABLE `planning`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `user`
+-- Indeks untuk tabel `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id_user`);
 
 --
--- Indexes for table `video`
+-- Indeks untuk tabel `video`
 --
 ALTER TABLE `video`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `actuating_foto`
+-- AUTO_INCREMENT untuk tabel `actuating_foto`
 --
 ALTER TABLE `actuating_foto`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `file`
+-- AUTO_INCREMENT untuk tabel `file`
 --
 ALTER TABLE `file`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `komentar`
+-- AUTO_INCREMENT untuk tabel `komentar_foto`
 --
-ALTER TABLE `komentar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `komentar_foto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `kuesioner`
+-- AUTO_INCREMENT untuk tabel `komentar_video`
+--
+ALTER TABLE `komentar_video`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT untuk tabel `kuesioner`
 --
 ALTER TABLE `kuesioner`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `organizing`
+-- AUTO_INCREMENT untuk tabel `organizing`
 --
 ALTER TABLE `organizing`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `pengajuan_akun`
+-- AUTO_INCREMENT untuk tabel `pengajuan_akun`
 --
 ALTER TABLE `pengajuan_akun`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `planning`
+-- AUTO_INCREMENT untuk tabel `planning`
 --
 ALTER TABLE `planning`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `user`
+-- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT for table `video`
+-- AUTO_INCREMENT untuk tabel `video`
 --
 ALTER TABLE `video`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `actuating_foto`
+-- Ketidakleluasaan untuk tabel `actuating_foto`
 --
 ALTER TABLE `actuating_foto`
   ADD CONSTRAINT `actuating_foto_ibfk_1` FOREIGN KEY (`upload_by`) REFERENCES `user` (`id_user`);
 
 --
--- Constraints for table `komentar`
+-- Ketidakleluasaan untuk tabel `komentar_foto`
 --
-ALTER TABLE `komentar`
-  ADD CONSTRAINT `komentar_ibfk_1` FOREIGN KEY (`id_video`) REFERENCES `video` (`id`),
-  ADD CONSTRAINT `komentar_ibfk_2` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`);
+ALTER TABLE `komentar_foto`
+  ADD CONSTRAINT `komentar_foto_ibfk_1` FOREIGN KEY (`id_foto`) REFERENCES `actuating_foto` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `komentar_foto_ibfk_2` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ketidakleluasaan untuk tabel `komentar_video`
+--
+ALTER TABLE `komentar_video`
+  ADD CONSTRAINT `komentar_video_ibfk_1` FOREIGN KEY (`id_video`) REFERENCES `video` (`id`),
+  ADD CONSTRAINT `komentar_video_ibfk_2` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
