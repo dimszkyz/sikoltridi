@@ -34,6 +34,8 @@ const kuesionerRoutes = require('./routes/kuesioner.routes');
 const videoRoutes = require('./routes/videoRoutes');
 const videoAdminRoutes = require('./routes/videoAdminRoutes');
 const komentarVideoRoutes = require('./routes/komentarVideoRoutes'); // <-- TAMBAHKAN INI
+const actuatingFotoRoutes = require('./routes/actuatingFotoRoutes');
+const komentarFotoRoutes = require('./routes/komentarFotoRoutes');
 
 // === Default Welcome Route ===
 app.get('/', (_req, res) => {
@@ -49,6 +51,8 @@ app.use('/api/kuesioner', kuesionerRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/video', videoAdminRoutes);
 app.use('/api/komentar', komentarVideoRoutes); // <-- DAN INI
+app.use('/actual', actuatingFotoRoutes);
+app.use('/api/komentar-foto', komentarFotoRoutes);
 
 // === Error Handling ===
 app.use((err, _req, res, _next) => {

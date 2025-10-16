@@ -15,6 +15,7 @@ import PartControlling from "./pages/PartControlling";
 import ControllingAdmin from "./pages/admin/Controlling";
 import DetailVideo from "./pages/DetailVideo";
 import Video from "./pages/admin/video.jsx";
+import DetailFoto from "./pages/DetailFoto";
 
 import RequireAuth from "./components/RequireAuth"; // <-- import
 
@@ -28,6 +29,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/actuating/video/:id" element={<DetailVideo />} />
+        <Route path="/actuating/foto/:id" element={<DetailFoto />} />
 
         {/* route untuk pengajuan akun mungkin boleh diakses admin only juga */}
         <Route

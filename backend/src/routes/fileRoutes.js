@@ -27,6 +27,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.get('/', fileController.getAllFiles);
+router.delete('/:id', fileController.deleteFile);
 
 // Rute BARU: Terima 2 file sekaligus (pdf dan image)
 router.post('/', upload.fields([

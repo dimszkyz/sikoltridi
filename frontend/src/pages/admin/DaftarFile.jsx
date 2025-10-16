@@ -38,6 +38,19 @@ const DaftarFile = () => {
     return new Date(dateString).toLocaleDateString("id-ID", options);
   };
 
+  const handleDelete = async (id) => {
+  if (!window.confirm("Yakin ingin menghapus file ini?")) return;
+
+  try {
+    await axios.delete(`${LIST_ENDPOINT}/${id}`);
+    alert("File berhasil dihapus!");
+    fetchFiles(); // refresh daftar file
+  } catch (err) {
+    console.error(err);
+    alert("Gagal menghapus file. Coba lagi.");
+  }
+};
+
   const tableRows = useMemo(
     () =>
       files.map((file, index) => {
@@ -85,10 +98,7 @@ const DaftarFile = () => {
             </td>
 
             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-              <button className="text-indigo-600 hover:text-indigo-900 mr-4" title="Edit">
-                <FaEdit size={18} />
-              </button>
-              <button className="text-red-600 hover:text-red-900" title="Hapus">
+              <button onClick={() => handleDelete(file.id)} className="text-red-600 hover:text-red-900" title="Hapus">
                 <FaTrash size={18} />
               </button>
             </td>

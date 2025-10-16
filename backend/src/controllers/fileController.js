@@ -67,3 +67,26 @@ exports.createFile = async (req, res) => {
     });
   }
 };
+
+exports.deleteFile = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Cek apakah data ada
+    const [rows] = await db.query('SELECT * FROM file WHERE id = ?', [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'File tidak ditemukan' });
+    }
+
+    // Hapus dari database
+    await db.query('DELETE FROM file WHERE id = ?', [id]);
+
+    res.json({ message: 'File berhasil dihapus' });
+  } catch (err) {
+    console.error('Error deleting file:', err);
+    res.status(500).json({
+      message: 'Gagal menghapus file dari database',
+      error: err.message
+    });
+  }
+};
