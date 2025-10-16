@@ -1,5 +1,4 @@
 // frontend/src/App.jsx
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
 import Login from "./pages/login";
@@ -13,30 +12,108 @@ import Planning from "./pages/admin/Planning";
 import Organizing from "./pages/admin/Organizing";
 import AddOrganizing from "./pages/admin/AddOrganizing";
 import PartControlling from "./pages/PartControlling";
-import ControllingAdmin from "./pages/admin/Controlling"; 
+import ControllingAdmin from "./pages/admin/Controlling";
 import DetailVideo from "./pages/DetailVideo";
 import Video from "./pages/admin/video.jsx";
 
+import RequireAuth from "./components/RequireAuth"; // <-- import
 
 function App() {
+  const adminRoles = ["admin", "superadmin"];
+
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register/>}/>
+        <Route path="/register" element={<Register />} />
         <Route path="/actuating/video/:id" element={<DetailVideo />} />
-        <Route path="/admin/pengajuan-akun" element={<DaftarPengajuanAkun />} />
-        <Route path="/admin/admin" element={<Admin />} />
-        <Route path="/admin/files" element={<DaftarFile />} />
-        <Route path="/admin/files/add" element={<AddFile />} />
-        <Route path="/admin/planning/add" element={<AddPlanning />} />
-        <Route path="/admin/planning" element={<Planning />} /> 
-        <Route path="/admin/organizing" element={<Organizing />} />
-        <Route path="/admin/organizing/add" element={<AddOrganizing />} />
+
+        {/* route untuk pengajuan akun mungkin boleh diakses admin only juga */}
+        <Route
+          path="/admin/pengajuan-akun"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <DaftarPengajuanAkun />
+            </RequireAuth>
+          }
+        />
+
+        {/* contoh: semua route /admin/... dibungkus RequireAuth */}
+        <Route
+          path="/admin/admin"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <Admin />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/files"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <DaftarFile />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/files/add"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <AddFile />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/planning/add"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <AddPlanning />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/planning"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <Planning />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/organizing"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <Organizing />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/organizing/add"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <AddOrganizing />
+            </RequireAuth>
+          }
+        />
+
         <Route path="/controlling" element={<PartControlling />} />
-        <Route path="/admin/controlling" element={<ControllingAdmin />} />
-        <Route path="/admin/actuating/video" element={<Video />} />
+        <Route
+          path="/admin/controlling"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <ControllingAdmin />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/actuating/video"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <Video />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </Router>
   );
