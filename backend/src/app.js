@@ -6,14 +6,15 @@ const path = require('path');
 
 const app = express();
 
-// Middleware
-app.use(express.json());
+// === Tambahan penting untuk bisa baca field teks di FormData ===
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// === CORS ===
 app.use(cors({
   origin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
   credentials: true
 }));
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
 
 // === Static File Serving ===
 app.use('/uploads/files', express.static(path.join(__dirname, '../uploads/files')));
@@ -24,7 +25,6 @@ app.use('/uploads/mediavideo', express.static(path.join(__dirname, '../uploads/m
 app.use('/uploads/video', express.static(path.join(__dirname, '../uploads/video')));
 app.use('/uploads/video/thumb', express.static(path.join(__dirname, '../uploads/video/thumb')));
 
-
 // === IMPORT ROUTES ===
 const userRoutes = require('./routes/userRoutes');
 const fileRoutes = require('./routes/fileRoutes');
@@ -34,7 +34,6 @@ const kuesionerRoutes = require('./routes/kuesioner.routes');
 const videoRoutes = require('./routes/videoRoutes');
 const videoAdminRoutes = require('./routes/videoAdminRoutes');
 const komentarVideoRoutes = require('./routes/komentarVideoRoutes'); // <-- TAMBAHKAN INI
-
 
 // === Default Welcome Route ===
 app.get('/', (_req, res) => {
@@ -50,7 +49,6 @@ app.use('/api/kuesioner', kuesionerRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/video', videoAdminRoutes);
 app.use('/api/komentar', komentarVideoRoutes); // <-- DAN INI
-
 
 // === Error Handling ===
 app.use((err, _req, res, _next) => {
