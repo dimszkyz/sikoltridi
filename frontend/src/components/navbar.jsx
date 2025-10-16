@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -9,13 +9,11 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Tutup menu mobile & dropdown otomatis saat pindah halaman
   useEffect(() => {
     setOpen(false);
     setShowDropdown(false);
   }, [location.pathname, location.hash]);
 
-  // Tutup dropdown jika klik di luar area
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -35,16 +33,20 @@ const Navbar = () => {
     { to: "/controlling", label: "Controlling", isRoute: true },
   ];
 
-  // Ambil user dari localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) setUser(JSON.parse(storedUser));
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser.user || parsedUser);
+      console.log("Data user di Navbar:", parsedUser.user || parsedUser);
+    }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     setUser(null);
-    navigate("/login");
+    navigate("/");
+    window.location.reload();
   };
 
   const smoothScrollTo = (hash) => {
@@ -62,19 +64,17 @@ const Navbar = () => {
       navigate(item.to);
       return;
     }
-
-    const onHome = location.pathname === "/" || location.pathname === "";
+    const onHome = location.pathname === "/";
     if (onHome) smoothScrollTo(item.to);
     else goHomeWithHash(item.to);
   };
 
-  const isAdmin =
-    user && (user.level === "admin" || user.level === "superadmin");
+  const isSuperAdmin = user && user.level === "superadmin";
 
   return (
     <header className="w-full fixed top-0 left-0 z-50 flex justify-center py-3">
       <nav className="w-[92%] max-w-7xl bg-white/90 backdrop-blur-md rounded-full shadow-lg px-5 md:px-8 py-2.5 flex items-center justify-between">
-        {/* Logo */}
+        {/* ===== TEKS SIKOLTRIDI SEBAGAI BRAND ===== */}
         <a
           href="/#home"
           onClick={(e) => {
@@ -86,6 +86,7 @@ const Navbar = () => {
         >
           Sikoltridi
         </a>
+
 
         {/* Menu desktop */}
         <ul className="hidden md:flex items-center gap-8 text-slate-700">
@@ -115,22 +116,24 @@ const Navbar = () => {
                   alt="user"
                   className="w-6 h-6 mr-2"
                 />
-                <span className="text-sm font-medium text-slate-800">
-                  {user.username} ({user.level})
+                <span className="text-sm font-medium text-slate-800 capitalize">
+                  {user?.username} ({user?.level})
                 </span>
               </button>
 
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-44 bg-blue-50 text-slate-700 rounded-xl shadow-lg py-2 animate-fadeIn">
-                  {isAdmin && (
-                    <button
-                      onClick={() => navigate("/admin/admin")}
-                      className="w-full text-left px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 rounded-md transition"
-                    >
-                      🛠️ Admin Panel
-                    </button>
+                  {isSuperAdmin && (
+                    <>
+                      <button
+                        onClick={() => navigate("/admin/admin")}
+                        className="w-full text-left px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 rounded-md transition"
+                      >
+                        🛠️ Admin Panel
+                      </button>
+                      <hr className="my-1 border-blue-100" />
+                    </>
                   )}
-                  {isAdmin && <hr className="my-1 border-blue-100" />}
                   <button
                     onClick={handleLogout}
                     className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-blue-100 hover:text-red-600 rounded-md transition"
@@ -141,11 +144,11 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <a href="/login">
+            <Link to="/login">
               <button className="px-5 py-2 rounded-full bg-blue-500 text-white text-sm font-semibold hover:bg-blue-600 transition shadow">
                 Login
               </button>
-            </a>
+            </Link>
           )}
         </div>
 
@@ -163,20 +166,17 @@ const Navbar = () => {
             strokeWidth="2"
             strokeLinecap="round"
           >
-            <path d="M4 7h16" />
-            <path d="M4 12h16" />
-            <path d="M4 17h16" />
+            <path d="M4 7h16" /><path d="M4 12h16" /><path d="M4 17h16" />
           </svg>
         </button>
       </nav>
 
       {/* Menu dropdown mobile */}
       <div
-        className={`md:hidden fixed left-1/2 -translate-x-1/2 top-[64px] w-[92%] max-w-7xl transition-all duration-300 ${
-          open
-            ? "opacity-100 translate-y-0 pointer-events-auto"
-            : "opacity-0 -translate-y-2 pointer-events-none"
-        }`}
+        className={`md:hidden fixed left-1/2 -translate-x-1/2 top-[76px] w-[92%] max-w-7xl transition-all duration-300 ${open
+          ? "opacity-100 translate-y-0 pointer-events-auto"
+          : "opacity-0 -translate-y-2 pointer-events-none"
+          }`}
       >
         <div className="bg-white/95 backdrop-blur-md shadow-lg rounded-2xl p-3">
           {navItems.map((item) => (
@@ -189,18 +189,12 @@ const Navbar = () => {
               {item.label}
             </a>
           ))}
-
           <hr className="my-2 border-slate-200" />
-
-          {/* Menu tambahan di mobile */}
           {user ? (
             <>
-              {isAdmin && (
+              {isSuperAdmin && (
                 <button
-                  onClick={() => {
-                    navigate("/admin/admin");
-                    setOpen(false);
-                  }}
+                  onClick={() => navigate("/admin/admin")}
                   className="block w-full text-left px-3 py-2 rounded-xl text-blue-700 font-medium hover:bg-blue-50 transition"
                 >
                   🛠️ Admin Panel
@@ -210,15 +204,12 @@ const Navbar = () => {
                 onClick={handleLogout}
                 className="block w-full text-left px-3 py-2 rounded-xl text-red-500 font-medium hover:bg-red-50 transition"
               >
-                Logout ({user.username})
+                Logout ({user?.username})
               </button>
             </>
           ) : (
             <button
-              onClick={() => {
-                navigate("/login");
-                setOpen(false);
-              }}
+              onClick={() => navigate("/login")}
               className="block w-full text-left px-3 py-2 rounded-xl font-medium text-blue-600 hover:bg-blue-50 transition"
             >
               Login

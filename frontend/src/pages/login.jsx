@@ -1,82 +1,100 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     try {
-      // Nanti disesuaikan endpoint login API-mu
-      const res = await axios.post("http://localhost:5000/api/users/login", {
+      const response = await axios.post('http://localhost:5000/api/users/login', {
         username,
         password,
       });
 
-      if (res.data.success) {
-        const user = res.data.user;
-        localStorage.setItem("user", JSON.stringify(user));
-        alert(`Selamat datang, ${user.username}!`);
-        navigate("/");
+      // --- TAMBAHAN UNTUK DEBUGGING ---
+      // Ini akan menampilkan struktur data dari server di console browser
+      console.log('Data dari Server:', response.data);
+
+      // Simpan data pengguna ke localStorage
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      // Arahkan ke halaman utama setelah login berhasil
+      navigate('/');
+
+      // Muat ulang halaman untuk memastikan navbar diperbarui
+      window.location.reload();
+
+    } catch (err) {
+      if (err.response) {
+        setError(err.response.data.message || 'Login gagal. Periksa kembali username dan password Anda.');
       } else {
-        alert("Username atau password salah!");
+        setError('Tidak dapat terhubung ke server. Silakan coba lagi nanti.');
       }
-    } catch (error) {
-      alert("Terjadi kesalahan saat login");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
-
-        <form onSubmit={handleLogin} className="space-y-4">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">Login</h2>
+        {error && <p className="text-sm text-center text-red-500">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block mb-1 text-gray-600">Username</label>
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Username
+            </label>
             <input
+              id="username"
+              name="username"
               type="text"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-              placeholder="Masukkan username"
+              required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              required
+              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
-
           <div>
-            <label className="block mb-1 text-gray-600">Password</label>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Password
+            </label>
             <input
+              id="password"
+              name="password"
               type="password"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-              placeholder="Masukkan password"
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
+              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             />
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-          >
-            Login
-          </button>
+          <div>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Login
+            </button>
+          </div>
         </form>
-
-        {/* Tombol Daftar Akun */}
-        <div className="text-center mt-4">
-          <p className="text-gray-600">Belum punya akun?</p>
-          <button
-            onClick={() => navigate("/register")}
-            className="text-blue-600 hover:underline"
-          >
-            Daftar Akun
-          </button>
-        </div>
+        <p className="text-sm text-center text-gray-600 dark:text-gray-400">
+          Belum punya akun?{' '}
+          <Link to="/register" className="font-medium text-blue-600 hover:underline">
+            Daftar di sini
+          </Link>
+        </p>
       </div>
     </div>
   );
