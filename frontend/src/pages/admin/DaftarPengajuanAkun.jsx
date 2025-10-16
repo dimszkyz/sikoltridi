@@ -1,100 +1,143 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SidebarAdmin from "../../components/sidebarAdmin";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle, FaTrash } from "react-icons/fa";
 
 const DaftarPengajuanAkun = () => {
-    const [pengajuan, setPengajuan] = useState([]);
+  const [pengajuan, setPengajuan] = useState([]);
+  const [users, setUsers] = useState([]); // ➕ state user
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+  useEffect(() => {
+    fetchData();
+    fetchUsers(); // ➕ panggil ambil data user
+  }, []);
 
-    const fetchData = async () => {
-        const res = await axios.get("http://localhost:5000/api/users/pengajuan-akun");
-        setPengajuan(res.data.data);
-    };
+  const fetchData = async () => {
+    const res = await axios.get("http://localhost:5000/api/users/pengajuan-akun");
+    setPengajuan(res.data.data);
+  };
 
-    const approve = async (id, role) => {
-        const selectedUser = pengajuan.find((item) => item.id === id);
-        const username = selectedUser?.username || "Pengguna";
+  const fetchUsers = async () => {
+    const res = await axios.get("http://localhost:5000/api/users/list-user");
+    setUsers(res.data.data);
+  };
 
-        await axios.post(`http://localhost:5000/api/users/approve/${id}`, { role });
-        alert(`✅ Akun ${username} disetujui sebagai ${role}!`);
-        fetchData();
-    };
+  const approve = async (id, role) => {
+    const selectedUser = pengajuan.find((item) => item.id === id);
+    const username = selectedUser?.username || "Pengguna";
 
-    const reject = async (id) => {
-        const selectedUser = pengajuan.find((item) => item.id === id);
-        const username = selectedUser?.username || "Pengguna";
+    await axios.post(`http://localhost:5000/api/users/approve/${id}`, { role });
+    alert(`✅ Akun ${username} disetujui sebagai ${role}!`);
+    fetchData();
+    fetchUsers(); // refresh tabel user
+  };
 
-        await axios.delete(`http://localhost:5000/api/users/reject/${id}`);
-        alert(`❌ Akun ${username} ditolak & dihapus!`);
-        fetchData();
-    };
+  const reject = async (id) => {
+    const selectedUser = pengajuan.find((item) => item.id === id);
+    const username = selectedUser?.username || "Pengguna";
 
-    return (
-        <div className="flex h-screen bg-gray-100">
-            <SidebarAdmin />
+    await axios.delete(`http://localhost:5000/api/users/reject/${id}`);
+    alert(`❌ Akun ${username} ditolak & dihapus!`);
+    fetchData();
+  };
 
-            <div className="flex-1 p-6">
-                <h1 className="text-2xl font-bold mb-6">Daftar Pengajuan Akun</h1>
+  const deleteUser = async (id, username) => {
+    if (window.confirm(`Hapus user ${username}?`)) {
+      await axios.delete(`http://localhost:5000/api/users/delete-user/${id}`);
+      alert(`🗑️ User ${username} dihapus`);
+      fetchUsers();
+    }
+  };
 
-                <table className="w-full border border-gray-300">
-                    <thead className="bg-gray-300">
-                        <tr>
-                            <th className="p-3 text-center border border-gray-300 font-semibold">No</th>
-                            <th className="p-3 text-center border border-gray-300 font-semibold">Username</th>
-                            <th className="p-3 text-center border border-gray-300 font-semibold">Role</th>
-                            <th className="p-3 text-center border border-gray-300 font-semibold">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {pengajuan.map((item, index) => (
-                            <tr
-                                key={item.id}
-                                className="hover:bg-gray-100 transition border border-gray-300"
-                            >
-                                <td className="p-3 text-center border border-gray-300">{index + 1}</td>
-                                <td className="p-3 text-center border border-gray-300">{item.username}</td>
-                                <td className="p-3 text-center border border-gray-300">
-                                    <select
-                                        value={item.role || "user"} // Default 'user'
-                                        onChange={(e) => {
-                                            const updated = pengajuan.map((row) =>
-                                                row.id === item.id ? { ...row, role: e.target.value } : row
-                                            );
-                                            setPengajuan(updated);
-                                        }}
-                                        className="border px-2 py-1 rounded"
-                                    >
-                                        <option value="user">User</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="superadmin">Super Admin</option>
-                                    </select>
-                                </td>
-                                <td className="p-3 flex flex-col items-center gap-2 border border-gray-300">
-                                    <button
-                                        className="flex items-center gap-2 bg-green-600 px-3 py-1 text-white rounded hover:bg-green-700"
-                                        onClick={() => approve(item.id, item.role || "user")}
-                                    >
-                                        <FaCheckCircle /> Accept
-                                    </button>
-                                    <button
-                                        className="flex items-center gap-2 bg-red-600 px-3 py-1 text-white rounded hover:bg-red-700"
-                                        onClick={() => reject(item.id)}
-                                    >
-                                        <FaTimesCircle /> Reject
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+  return (
+    <div className="flex h-screen bg-gray-100">
+      <SidebarAdmin />
 
-            </div>
-        </div>
-    );
+      <div className="flex-1 p-6">
+        <h1 className="text-2xl font-bold mb-6">Daftar Pengajuan Akun</h1>
+
+        {/* TABEL PENGAJUAN */}
+        <table className="w-full border border-gray-300 mb-10">
+          <thead className="bg-gray-300">
+            <tr>
+              <th className="p-3 text-center border">No</th>
+              <th className="p-3 text-center border">Username</th>
+              <th className="p-3 text-center border">Role</th>
+              <th className="p-3 text-center border">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pengajuan.map((item, index) => (
+              <tr key={item.id} className="hover:bg-gray-100 transition border">
+                <td className="p-3 text-center border">{index + 1}</td>
+                <td className="p-3 text-center border">{item.username}</td>
+                <td className="p-3 text-center border">
+                  <select
+                    value={item.role || "user"}
+                    onChange={(e) => {
+                      const updated = pengajuan.map((row) =>
+                        row.id === item.id ? { ...row, role: e.target.value } : row
+                      );
+                      setPengajuan(updated);
+                    }}
+                    className="border px-2 py-1 rounded"
+                  >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                    <option value="superadmin">Super Admin</option>
+                  </select>
+                </td>
+                <td className="p-3 flex flex-col items-center gap-2 border">
+                  <button
+                    className="flex items-center gap-2 bg-green-600 px-3 py-1 text-white rounded hover:bg-green-700"
+                    onClick={() => approve(item.id, item.role || "user")}
+                  >
+                    <FaCheckCircle /> Accept
+                  </button>
+                  <button
+                    className="flex items-center gap-2 bg-red-600 px-3 py-1 text-white rounded hover:bg-red-700"
+                    onClick={() => reject(item.id)}
+                  >
+                    <FaTimesCircle /> Reject
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* ➕ TABEL USER */}
+        <h2 className="text-xl font-bold mb-4">Daftar User</h2>
+        <table className="w-full border border-gray-300">
+          <thead className="bg-gray-300">
+            <tr>
+              <th className="p-3 text-center border">ID</th>
+              <th className="p-3 text-center border">Username</th>
+              <th className="p-3 text-center border">Role</th>
+              <th className="p-3 text-center border">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id} className="hover:bg-gray-100 border">
+                <td className="p-3 text-center border">{user.id}</td>
+                <td className="p-3 text-center border">{user.username}</td>
+                <td className="p-3 text-center border">{user.level}</td>
+                <td className="p-3 text-center border">
+                  <button
+                    onClick={() => deleteUser(user.id, user.username)}
+                    className="flex items-center gap-2 bg-red-600 px-3 py-1 text-white rounded hover:bg-red-700 mx-auto"
+                  >
+                    <FaTrash /> Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 };
 
 export default DaftarPengajuanAkun;

@@ -69,7 +69,7 @@ const Navbar = () => {
     else goHomeWithHash(item.to);
   };
 
-  const isSuperAdmin = user && user.level === "superadmin";
+  const isAdmin = user && (user.level === "admin" || user.level === "superadmin");
 
   return (
     <header className="w-full fixed top-0 left-0 z-50 flex justify-center py-3">
@@ -123,7 +123,7 @@ const Navbar = () => {
 
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-44 bg-blue-50 text-slate-700 rounded-xl shadow-lg py-2 animate-fadeIn">
-                  {isSuperAdmin && (
+                  {isAdmin && (
                     <>
                       <button
                         onClick={() => navigate("/admin/admin")}
@@ -192,7 +192,7 @@ const Navbar = () => {
           <hr className="my-2 border-slate-200" />
           {user ? (
             <>
-              {isSuperAdmin && (
+              {isAdmin && (
                 <button
                   onClick={() => navigate("/admin/admin")}
                   className="block w-full text-left px-3 py-2 rounded-xl text-blue-700 font-medium hover:bg-blue-50 transition"

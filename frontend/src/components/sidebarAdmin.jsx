@@ -1,4 +1,3 @@
-// frontend/src/components/sidebarAdmin.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
@@ -13,7 +12,7 @@ import {
   FaChevronRight,
   FaVideo,
   FaCamera,
-  FaProjectDiagram, // ikon baru untuk Organizing
+  FaProjectDiagram,
   FaClipboardCheck,
 } from "react-icons/fa";
 
@@ -21,22 +20,39 @@ const SidebarAdmin = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [actuatingOpen, setActuatingOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const flyoutRef = useRef(null);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser.user || parsedUser);
+    }
+  }, []);
+
+  // 🔹 Tentukan apakah user adalah superadmin
+  const isSuperAdmin = user?.level === "superadmin";
+
+  // 🔹 Navigasi utama
   const navLinks = [
     { to: "/admin/admin", icon: FaTachometerAlt, text: "Dashboard" },
-    { to: "/admin/pengajuan-akun", icon: FaUsers, text: "Manajemen User" },
+    // 👇 tampilkan Manajemen User hanya jika superadmin
+    ...(isSuperAdmin
+      ? [{ to: "/admin/pengajuan-akun", icon: FaUsers, text: "Manajemen User" }]
+      : []),
     { to: "/admin/files", icon: FaFileAlt, text: "Manajemen File" },
     { to: "/admin/planning", icon: FaClipboardList, text: "Planning" },
     { to: "/admin/organizing", icon: FaProjectDiagram, text: "Organizing" },
-    { to: "/admin/controlling", icon: FaClipboardCheck, text: "Controlling" }, // ✅ menu baru
+    { to: "/admin/controlling", icon: FaClipboardCheck, text: "Controlling" },
   ];
 
   const handleLogout = () => {
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
-  // Tutup flyout saat klik di luar (collapsed mode)
+  // Tutup flyout saat klik di luar
   useEffect(() => {
     const closeOnOutside = (e) => {
       if (flyoutRef.current && !flyoutRef.current.contains(e.target)) {
@@ -54,33 +70,31 @@ const SidebarAdmin = () => {
       shadow-2xl ring-1 ring-slate-700/40 transition-all duration-300`}
     >
       {/* === Brand / Toggle === */}
-<div
-  className={`flex items-center ${
-    collapsed ? "justify-end" : "justify-between"
-  } px-4 py-4 border-b border-white/5`}
->
-  {/* Tampilkan logo dan teks hanya saat sidebar tidak collapsed */}
-  {!collapsed && (
-    <div className="flex items-center gap-3">
-      <div className="h-9 w-9 rounded-xl bg-indigo-500/20 grid place-items-center ring-1 ring-indigo-400/30">
-        <span className="font-black text-indigo-300">Si</span>
-      </div>
-      <div>
-        <p className="text-lg font-semibold tracking-wide">Sikoltridi</p>
-        <p className="text-xs text-slate-400 -mt-1">Admin Panel</p>
-      </div>
-    </div>
-  )}
+      <div
+        className={`flex items-center ${
+          collapsed ? "justify-end" : "justify-between"
+        } px-4 py-4 border-b border-white/5`}
+      >
+        {!collapsed && (
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-indigo-500/20 grid place-items-center ring-1 ring-indigo-400/30">
+              <span className="font-black text-indigo-300">Si</span>
+            </div>
+            <div>
+              <p className="text-lg font-semibold tracking-wide">Sikoltridi</p>
+              <p className="text-xs text-slate-400 -mt-1">Admin Panel</p>
+            </div>
+          </div>
+        )}
 
-  <button
-    onClick={() => setCollapsed((v) => !v)}
-    className="text-slate-300/80 hover:text-white rounded-lg p-2 transition"
-    title={collapsed ? "Expand" : "Collapse"}
-    aria-label={collapsed ? "Perluas sidebar" : "Ciutkan sidebar"}
-  >
-    {collapsed ? <FaBars /> : <FaChevronLeft />}
-  </button>
-</div>
+        <button
+          onClick={() => setCollapsed((v) => !v)}
+          className="text-slate-300/80 hover:text-white rounded-lg p-2 transition"
+          title={collapsed ? "Expand" : "Collapse"}
+        >
+          {collapsed ? <FaBars /> : <FaChevronLeft />}
+        </button>
+      </div>
 
       {/* === Navigation === */}
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
@@ -128,7 +142,7 @@ const SidebarAdmin = () => {
           );
         })}
 
-        {/* === Actuating (with submenu) === */}
+        {/* === Actuating (submenu) === */}
         <div className="relative">
           <button
             type="button"
@@ -169,7 +183,6 @@ const SidebarAdmin = () => {
             )}
           </button>
 
-          {/* Submenu (expanded in sidebar when NOT collapsed) */}
           {!collapsed && actuatingOpen && (
             <div className="mt-1 ml-12 space-y-1">
               <NavLink
@@ -200,47 +213,10 @@ const SidebarAdmin = () => {
               </NavLink>
             </div>
           )}
-
-          {/* Flyout submenu (collapsed mode) */}
-          {collapsed && actuatingOpen && (
-            <div
-              ref={flyoutRef}
-              className="absolute top-0 left-full ml-2 w-48 rounded-xl bg-slate-900/95 text-slate-200 shadow-xl ring-1 ring-slate-700/40 p-2"
-            >
-              <NavLink
-                to="/admin/actuating/video"
-                onClick={() => setActuatingOpen(false)}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition ${
-                    isActive
-                      ? "bg-white/10 text-white"
-                      : "text-slate-300 hover:bg-white/5"
-                  }`
-                }
-              >
-                <FaVideo className="opacity-80" />
-                <span>Video</span>
-              </NavLink>
-              <NavLink
-                to="/admin/actuating/foto"
-                onClick={() => setActuatingOpen(false)}
-                className={({ isActive }) =>
-                  `mt-1 flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition ${
-                    isActive
-                      ? "bg-white/10 text-white"
-                      : "text-slate-300 hover:bg-white/5"
-                  }`
-                }
-              >
-                <FaCamera className="opacity-80" />
-                <span>Foto</span>
-              </NavLink>
-            </div>
-          )}
         </div>
       </nav>
 
-      {/* === Footer / Logout === */}
+      {/* === Footer === */}
       <div className="mt-auto border-t border-white/5 px-3 py-3">
         <div
           className={`flex items-center ${
@@ -255,8 +231,8 @@ const SidebarAdmin = () => {
                 className="h-9 w-9 rounded-full ring-1 ring-white/10"
               />
               <div className="leading-tight">
-                <p className="text-sm font-semibold">Admin</p>
-                <p className="text-xs text-slate-400">Administrator</p>
+                <p className="text-sm font-semibold">{user?.username || "Admin"}</p>
+                <p className="text-xs text-slate-400 capitalize">{user?.level || "level"}</p>
               </div>
             </div>
           )}
@@ -264,7 +240,6 @@ const SidebarAdmin = () => {
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-slate-200 hover:bg-red-500/10 hover:text-red-300 transition"
-            title="Logout"
           >
             <FaSignOutAlt />
             {!collapsed && <span className="text-sm font-medium">Logout</span>}

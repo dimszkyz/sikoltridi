@@ -121,6 +121,26 @@ const rejectAkun = async (req, res) => {
   }
 };
 
+const getAllUsersDB = async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT id_user AS id, username, level FROM user");
+    res.status(200).json({ data: rows });
+  } catch (err) {
+    res.status(500).json({ msg: "Gagal mengambil data user", error: err });
+  }
+};
+
+// Hapus user
+const deleteUser = async (req, res) => {
+  const id = req.params.id;
+  try {
+    await db.query("DELETE FROM user WHERE id_user = ?", [id]);
+    res.status(200).json({ msg: "User berhasil dihapus" });
+  } catch (err) {
+    res.status(500).json({ msg: "Gagal menghapus user", error: err });
+  }
+};
+
 module.exports = {
   getAllUsers,
   ajukanAkun,
@@ -128,4 +148,6 @@ module.exports = {
   approveAkun,
   getPengajuanAkunList,
   loginUser,
+  getAllUsersDB,
+  deleteUser,  
 };
