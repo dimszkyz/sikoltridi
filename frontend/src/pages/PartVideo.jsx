@@ -26,9 +26,8 @@ export default function PartVideo() {
 
   const fetchFotos = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/actual/actuating-foto`);
-      if (res.data.success) setFotos(res.data.data);
-      else setFotos([]);
+      const res = await axios.get(`${API_BASE}/api/foto`);
+      setFotos(res.data || []);
     } catch (err) {
       console.error("Gagal mengambil foto:", err);
     }
@@ -121,8 +120,8 @@ export default function PartVideo() {
                 >
                   <div className="relative w-full aspect-square bg-gray-200">
                     <img
-                      src={`${API_BASE}/uploads/images/${foto.image_file}`}
-                      alt={foto.title}
+                      src={`${API_BASE}/uploads/foto/${foto.foto}`}
+                      alt={foto.judul}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-black/30 opacity-0 hover:opacity-100 transition flex items-center justify-center text-white text-lg font-semibold">
@@ -131,10 +130,10 @@ export default function PartVideo() {
                   </div>
                   <div className="p-4 text-left">
                     <h3 className="font-semibold text-slate-800 mb-1 line-clamp-1">
-                      {foto.title}
+                      {foto.judul}
                     </h3>
                     <p className="text-sm text-slate-600 line-clamp-2">
-                      {foto.deskripsi_image || "-"}
+                      {foto.deskripsi || "-"}
                     </p>
                   </div>
                 </div>

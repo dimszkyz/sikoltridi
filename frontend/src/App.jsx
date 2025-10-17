@@ -15,6 +15,7 @@ import PartControlling from "./pages/PartControlling";
 import ControllingAdmin from "./pages/admin/Controlling";
 import DetailVideo from "./pages/DetailVideo";
 import Video from "./pages/admin/video.jsx";
+import Foto from "./pages/admin/foto.jsx";
 import DetailFoto from "./pages/DetailFoto";
 
 import RequireAuth from "./components/RequireAuth"; // <-- import
@@ -113,6 +114,14 @@ function App() {
           element={
             <RequireAuth allowedRoles={adminRoles}>
               <Video />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/admin/actuating/foto"
+          element={
+            <RequireAuth allowedRoles={adminRoles}>
+              <Foto />
             </RequireAuth>
           }
         />

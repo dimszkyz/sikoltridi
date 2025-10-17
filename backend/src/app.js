@@ -24,6 +24,7 @@ app.use('/uploads/organizing', express.static(path.join(__dirname, '../uploads/o
 app.use('/uploads/mediavideo', express.static(path.join(__dirname, '../uploads/mediavideo')));
 app.use('/uploads/video', express.static(path.join(__dirname, '../uploads/video')));
 app.use('/uploads/video/thumb', express.static(path.join(__dirname, '../uploads/video/thumb')));
+app.use('/uploads/foto', express.static(path.join(__dirname, '../../uploads/foto')));
 
 // === IMPORT ROUTES ===
 const userRoutes = require('./routes/userRoutes');
@@ -51,7 +52,7 @@ app.use('/api/kuesioner', kuesionerRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/video', videoAdminRoutes);
 app.use('/api/komentar', komentarVideoRoutes); // <-- DAN INI
-app.use('/actual', actuatingFotoRoutes);
+app.use('/api', actuatingFotoRoutes);
 app.use('/api/komentar-foto', komentarFotoRoutes);
 
 // === Error Handling ===
