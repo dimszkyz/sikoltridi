@@ -20,8 +20,8 @@ const DetailFoto = () => {
       try {
         setLoading(true);
         // Ambil detail foto
-        const fotoResponse = await axios.get(`${API_BASE}/actual/actuating-foto/${id}`);
-        setFoto(fotoResponse.data.data);
+        const fotoResponse = await axios.get(`${API_BASE}/api/foto/${id}`);
+        setFoto(fotoResponse.data);
 
         // Ambil komentar berdasarkan id_foto
         const komentarResponse = await axios.get(`${API_BASE}/api/komentar-foto/${id}`);
