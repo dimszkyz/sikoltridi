@@ -1,194 +1,177 @@
-// frontend/src/pages/admin/AddFile.jsx
-
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
-import SidebarAdmin from "../../components/sidebarAdmin";
-import { FaUpload, FaArrowLeft } from "react-icons/fa";
 import * as pdfjsLib from "pdfjs-dist";
 import "pdfjs-dist/build/pdf.worker.entry";
 
-const AddFile = () => {
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const CREATE_ENDPOINT = `${API_BASE}/api/files`;
+
+export default function AddFileModal({ open, onClose, onSuccess }) {
   const [title, setTitle] = useState("");
   const [pdfFile, setPdfFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const [submitting, setSubmitting] = useState(false);
+  const pdfRef = useRef(null);
 
-  const handleFileChange = async (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      if (selectedFile.type !== "application/pdf") {
-        setError("File yang dipilih harus berformat PDF.");
-        setPdfFile(null);
-        setPreviewUrl("");
-        return;
-      }
+  if (!open) return null;
 
-      setError("");
-      // 1. Simpan file asli dari input. Objek ini HANYA akan digunakan untuk upload.
-      setPdfFile(selectedFile);
-
-      // 2. Gunakan FileReader untuk membuat salinan file di memori (ArrayBuffer) khusus untuk preview,
-      //    ini mencegah file asli menjadi rusak.
-      const reader = new FileReader();
-      reader.onload = async function (event) {
-        try {
-          const pdfData = new Uint8Array(event.target.result);
-          // 3. Gunakan data salinan ini untuk pdfjs, bukan URL dari file asli.
-          const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
-          const page = await pdf.getPage(1);
-          const scale = 1.0; // Sesuaikan skala jika perlu
-          const viewport = page.getViewport({ scale });
-
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d");
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-
-          await page.render({ canvasContext: context, viewport }).promise;
-
-          // 4. Ubah canvas menjadi gambar dan tampilkan sebagai preview.
-          const imageData = canvas.toDataURL("image/png");
-          setPreviewUrl(imageData);
-        } catch (err) {
-          console.error("Gagal membuat preview PDF:", err);
-          setError("Gagal membuat preview PDF.");
-          setPreviewUrl("");
-        }
-      };
-
-      // Jalankan FileReader
-      reader.readAsArrayBuffer(selectedFile);
-    }
+  const resetForm = () => {
+    setTitle("");
+    setPdfFile(null);
+    setPreviewUrl("");
+    if (pdfRef.current) pdfRef.current.value = "";
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!title || !pdfFile) {
-      setError("Judul dan File PDF wajib diisi.");
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.type !== "application/pdf") {
+      alert("File harus berformat PDF!");
+      setPdfFile(null);
       return;
     }
+    setPdfFile(file);
 
-    setIsLoading(true);
-    setError("");
-    setSuccess("");
+    // Buat preview halaman pertama
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const data = new Uint8Array(event.target.result);
+      try {
+        const pdf = await pdfjsLib.getDocument({ data }).promise;
+        const page = await pdf.getPage(1);
+        const scale = 1.0;
+        const viewport = page.getViewport({ scale });
 
-    const formData = new FormData();
-    formData.append("title", title);
-    // 'pdfFile' di sini adalah objek file asli yang tidak terganggu oleh proses preview
-    formData.append("pdf_file", pdfFile);
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
 
-    // Konversi preview (base64) ke blob agar bisa dikirim sebagai file gambar
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        setPreviewUrl(canvas.toDataURL("image/png"));
+      } catch (err) {
+        console.error("Gagal membuat preview PDF:", err);
+        setPreviewUrl("");
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!title.trim()) return alert("Judul wajib diisi!");
+    if (!pdfFile) return alert("File PDF wajib diunggah!");
+
+    const fd = new FormData();
+    fd.append("title", title.trim());
+    fd.append("pdf_file", pdfFile);
+
+    // Tambahkan preview sebagai image_file
     if (previewUrl.startsWith("data:image")) {
       const blob = await (await fetch(previewUrl)).blob();
-      const imageFile = new File([blob], `${pdfFile.name.replace(/\.pdf$/, ".png")}`, { type: "image/png" });
-      formData.append("image_file", imageFile);
+      const imageFile = new File([blob], `${pdfFile.name.replace(/\.pdf$/, ".png")}`, {
+        type: "image/png",
+      });
+      fd.append("image_file", imageFile);
     }
 
+    setSubmitting(true);
     try {
-      await axios.post("http://localhost:5000/api/files", formData);
-      setSuccess("File berhasil diunggah!");
-      setTimeout(() => navigate("/admin/files"), 2000);
+      await axios.post(CREATE_ENDPOINT, fd);
+      resetForm();
+      onClose?.();
+      onSuccess?.();
     } catch (err) {
-      setError(err.response?.data?.message || "Terjadi kesalahan saat mengunggah file.");
       console.error(err);
+      alert("Gagal mengunggah file.");
     } finally {
-      setIsLoading(false);
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 font-sans">
-      <SidebarAdmin />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="flex justify-between items-center p-4 bg-white border-b">
-          <h1 className="text-2xl font-semibold text-gray-800">Tambah File Baru</h1>
-        </header>
-        <main className="flex-1 overflow-y-auto bg-gray-100 p-6">
-          <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
-            <Link to="/admin/files" className="text-blue-500 hover:underline mb-6 flex items-center">
-              <FaArrowLeft className="mr-2" /> Kembali ke Daftar File
-            </Link>
-            <form onSubmit={handleSubmit}>
-              {error && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                  {error}
-                </div>
-              )}
-              {success && (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                  {success}
-                </div>
-              )}
+    <div className="fixed inset-0 z-50">
+      {/* Background blur */}
+      <div
+        className="absolute inset-0 bg-black/50"
+        onClick={() => {
+          resetForm();
+          onClose?.();
+        }}
+      />
 
-              <div className="mb-6">
-                <label htmlFor="title" className="block text-gray-700 text-sm font-bold mb-2">
-                  Judul File
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                />
-              </div>
+      {/* Modal content */}
+      <div className="absolute left-1/2 top-1/2 w-[92vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white shadow-xl">
+        <div className="border-b px-6 py-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-800">Tambah File Baru</h2>
+          <button
+            onClick={() => {
+              resetForm();
+              onClose?.();
+            }}
+            className="text-gray-500 hover:text-gray-700 text-xl leading-none"
+          >
+            ×
+          </button>
+        </div>
 
-              <div className="mb-6">
-                <label htmlFor="file-upload" className="block text-gray-700 text-sm font-bold mb-2">
-                  Upload File PDF
-                </label>
-                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                  <div className="space-y-1 text-center">
-                    <FaUpload className="mx-auto h-12 w-12 text-gray-400" />
-                    <label
-                      htmlFor="file-upload"
-                      className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500"
-                    >
-                      <span>Pilih file</span>
-                      <input
-                        id="file-upload"
-                        type="file"
-                        className="sr-only"
-                        accept="application/pdf"
-                        onChange={handleFileChange}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {previewUrl && (
-                <div className="mb-6 text-center">
-                  <h3 className="text-gray-700 text-sm font-bold mb-2">Preview Halaman 1</h3>
-                  <img
-                    src={previewUrl}
-                    alt="Preview halaman pertama PDF"
-                    className="border rounded-md mx-auto shadow-sm"
-                    style={{ width: "200px", height: "auto" }}
-                  />
-                  <p className="text-xs text-gray-600 mt-1">File: {pdfFile?.name}</p>
-                </div>
-              )}
-
-              <div className="flex items-center justify-end">
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded focus:outline-none disabled:bg-gray-400"
-                >
-                  {isLoading ? "Mengunggah..." : "Simpan"}
-                </button>
-              </div>
-            </form>
+        <form onSubmit={onSubmit} className="p-6 grid gap-5">
+          <div className="grid gap-2">
+            <label className="text-sm font-medium">Judul File</label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Masukkan judul file"
+              className="w-full rounded border px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
-        </main>
+
+          <div className="grid gap-2">
+            <label className="text-sm font-medium">Upload File PDF</label>
+            <input
+              ref={pdfRef}
+              type="file"
+              accept="application/pdf"
+              onChange={handleFileChange}
+              className="w-full rounded border px-3 py-2 file:mr-3 file:rounded file:border-0 file:bg-gray-100 file:px-3 file:py-2"
+            />
+          </div>
+
+          {previewUrl && (
+            <div className="text-center">
+              <h3 className="text-sm font-medium mb-2">Preview Halaman 1</h3>
+              <img
+                src={previewUrl}
+                alt="Preview PDF"
+                className="border rounded shadow-sm mx-auto"
+                style={{ width: "180px", height: "auto" }}
+              />
+              <p className="text-xs text-gray-600 mt-1">{pdfFile?.name}</p>
+            </div>
+          )}
+
+          <div className="flex items-center gap-3 pt-3">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
+            >
+              {submitting ? "Mengunggah…" : "Simpan"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                resetForm();
+                onClose?.();
+              }}
+              className="px-5 py-2 rounded bg-gray-500 text-white hover:bg-gray-600"
+            >
+              Batal
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
-};
-
-export default AddFile;
+}
