@@ -108,7 +108,10 @@ export default function AddVideo({ open, onClose, onSuccess }) {
           </div>
 
           <div className="grid gap-2">
-            <label className="text-sm font-medium">Upload Thumbnail (JPG/PNG)</label>
+            <label className="text-sm font-medium">
+              Upload Thumbnail (JPG/PNG)
+              <span className="ml-2 font-normal text-gray-500">(tidak wajib diisi)</span>
+            </label>
             <input
               ref={thumbRef}
               type="file"
