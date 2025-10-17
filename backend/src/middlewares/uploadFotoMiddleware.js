@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Tentukan folder penyimpanan
-const storagePath = path.join(__dirname, '../../../uploads/foto');
+const storagePath = path.join(__dirname, '../uploads/images');
 
 // Pastikan direktori ada, jika tidak, buatkan
 if (!fs.existsSync(storagePath)) {
