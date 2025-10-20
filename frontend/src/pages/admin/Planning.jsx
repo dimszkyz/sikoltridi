@@ -166,14 +166,7 @@ const Planning = () => {
       <div className="flex-1 flex flex-col">
         <header className="sticky top-0 z-10 flex items-center justify-between bg-white/80 backdrop-blur border-b px-4 py-3">
           <h1 className="text-xl md:text-2xl font-semibold text-gray-800">Planning</h1>
-          <div className="hidden md:flex items-center">
-            <img
-              src="https://placehold.co/40x40"
-              alt="Admin"
-              className="w-9 h-9 rounded-full ring-1 ring-gray-200"
-            />
-            <span className="ml-3 font-semibold">Admin</span>
-          </div>
+          
         </header>
 
         <main className="flex-1 p-4 md:p-6 space-y-4">
@@ -184,7 +177,7 @@ const Planning = () => {
           <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
             {/* Toolbar card: tombol pindah ke sini, tampil di md+ */}
             <div className="flex items-center justify-between px-4 py-3 border-b">
-              <h2 className="text-lg font-semibold text-gray-800">Data Planning</h2>
+              <h2 className="text-lg font-semibold text-blue-700">Daftar Planning</h2>
               <button
                 onClick={() => setOpenModal(true)}
                 className="hidden md:inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 active:scale-[0.99] transition"

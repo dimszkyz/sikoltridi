@@ -69,7 +69,7 @@ export default function AddPlanning({ open, onClose, onSuccess }) {
                         aria-label="Close"
                         title="Close"
                     >
-                        —
+                        ×
                     </button>
                 </div>
 
