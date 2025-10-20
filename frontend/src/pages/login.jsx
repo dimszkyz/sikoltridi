@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -18,17 +20,9 @@ const Login = () => {
         password,
       });
 
-      // --- TAMBAHAN UNTUK DEBUGGING ---
-      // Ini akan menampilkan struktur data dari server di console browser
       console.log('Data dari Server:', response.data);
-
-      // Simpan data pengguna ke localStorage
       localStorage.setItem('user', JSON.stringify(response.data.user));
-
-      // Arahkan ke halaman utama setelah login berhasil
       navigate('/');
-
-      // Muat ulang halaman untuk memastikan navbar diperbarui
       window.location.reload();
 
     } catch (err) {
@@ -41,61 +35,84 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white">Login</h2>
-        {error && <p className="text-sm text-center text-red-500">{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              htmlFor="username"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Username
-            </label>
-            <input
-              id="username"
-              name="username"
-              type="text"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-            />
-          </div>
-          <div>
-            <button
-              type="submit"
-              className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Login
-            </button>
-          </div>
-        </form>
-        <p className="text-sm text-center text-gray-600 dark:text-gray-400">
-          Belum punya akun?{' '}
-          <Link to="/register" className="font-medium text-blue-600 hover:underline">
-            Daftar di sini
-          </Link>
+    // Wrapper utama untuk layout flex column
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      {/* Konten utama yang akan mengisi ruang tersedia */}
+      <main className="flex-grow flex items-center justify-center">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold text-center text-gray-900">Login</h2>
+          {error && <p className="text-sm text-center text-red-500">{error}</p>}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <div className="relative mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-3 py-2 pr-10 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                />
+                <div
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <FaEyeSlash className="text-gray-500" />
+                  ) : (
+                    <FaEye className="text-gray-500" />
+                  )}
+                </div>
+              </div>
+            </div>
+            <div>
+              <button
+                type="submit"
+                className="w-full px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Login
+              </button>
+            </div>
+          </form>
+          <p className="text-sm text-center text-gray-600">
+            Belum punya akun?{' '}
+            <Link to="/register" className="font-medium text-blue-600 hover:underline">
+              Daftar di sini
+            </Link>
+          </p>
+        </div>
+      </main>
+
+      {/* Footer yang Anda berikan */}
+      <footer className="bg-white text-black text-center py-4 border-t border-gray-200">
+        <p className="text-sm tracking-wide">
+          © Copyright <span className="font-bold">GAZEBO TECH 2025</span> All Rights Reserved
         </p>
-      </div>
+      </footer>
     </div>
   );
 };
