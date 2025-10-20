@@ -52,9 +52,12 @@ const DaftarPengajuanAkun = () => {
   return (
     <div className="flex h-screen bg-gray-100">
       <SidebarAdmin />
-
-      <div className="flex-1 p-6">
-        <h1 className="text-2xl font-bold mb-6">Daftar Pengajuan Akun</h1>
+      
+      <div className="flex-1">
+         <header className="flex justify-between items-center p-4 bg-white border-b">
+          <h1 className="text-2xl font-semibold text-gray-800">Daftar Pengajuan Akun</h1>
+        </header>
+        <div className="p-6">
 
         {/* TABEL PENGAJUAN */}
         <table className="w-full border border-gray-300 mb-10">
@@ -135,6 +138,7 @@ const DaftarPengajuanAkun = () => {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

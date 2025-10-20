@@ -134,9 +134,25 @@ const getAllUsersDB = async (req, res) => {
 const deleteUser = async (req, res) => {
   const id = req.params.id;
   try {
-    await db.query("DELETE FROM user WHERE id_user = ?", [id]);
-    res.status(200).json({ msg: "User berhasil dihapus" });
+    // Hapus data terkait di tabel-tabel lain
+    await db.query("DELETE FROM komentar_video WHERE id_user = ?", [id]).catch(() => {});
+    await db.query("DELETE FROM komentar_foto WHERE id_user = ?", [id]).catch(() => {});
+    await db.query("DELETE FROM files WHERE id_user = ?", [id]).catch(() => {});
+    await db.query("DELETE FROM video WHERE id_user = ?", [id]).catch(() => {});
+    await db.query("DELETE FROM foto WHERE id_user = ?", [id]).catch(() => {});
+    await db.query("DELETE FROM planning WHERE id_user = ?", [id]).catch(() => {});
+    await db.query("DELETE FROM organizing WHERE id_user = ?", [id]).catch(() => {});
+    await db.query("DELETE FROM actuating_foto WHERE upload_by = ?", [id]).catch(() => {});
+    // Terakhir hapus user
+    const [result] = await db.query("DELETE FROM user WHERE id_user = ?", [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ msg: "User tidak ditemukan" });
+    }
+
+    res.status(200).json({ msg: "User dan semua data terkait berhasil dihapus" });
   } catch (err) {
+    console.error("❌ Gagal hapus user:", err);
     res.status(500).json({ msg: "Gagal menghapus user", error: err });
   }
 };

@@ -133,35 +133,32 @@ const DetailFoto = () => {
               Komentar ({comments.length})
             </h2>
 
-            {comments.length > 0 ? (
-              <div className="space-y-4">
-                {comments.map((comment) => (
-                  <div
-                    key={comment.id}
-                    className="bg-gray-100 p-4 rounded-lg border border-gray-200"
-                  >
-                    <div className="flex justify-between items-center mb-1">
-                      <p className="font-semibold text-gray-800">
-                        {comment.username}{" "}
-                        <span className="text-xs text-gray-500">
-                          ({comment.level})
-                        </span>
-                      </p>
-                      <span className="text-xs text-gray-500">
-                        {new Date(comment.tanggal).toLocaleString("id-ID")}
-                      </span>
-                    </div>
-                    <p className="text-gray-700 text-sm break-words">
-                      {comment.isi_komentar}
+          {comments.length > 0 ? (
+            <div className="space-y-4">
+              {comments.map((comment) => (
+                <div
+                  key={comment.id}
+                  className="bg-gray-100 p-4 rounded-lg border border-gray-200"
+                >
+                  <div className="flex justify-between items-center mb-1">
+                    <p className="font-semibold text-gray-800">
+                      {comment.username}{" "}
                     </p>
+                    <span className="text-xs text-gray-500">
+                      {new Date(comment.tanggal).toLocaleString("id-ID")}
+                    </span>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-gray-500 italic">Belum ada komentar.</p>
-            )}
-          </div>
+                  <p className="text-gray-700 text-sm break-words">
+                    {comment.isi_komentar}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 italic">Belum ada komentar.</p>
+          )}
         </div>
+      </div>
 
         {/* === Input Komentar === */}
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-lg py-3 px-4">
