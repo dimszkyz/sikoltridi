@@ -64,7 +64,7 @@ export default function AddFoto({ open, onClose, onSuccess }) {
             }}
             className="text-gray-500 hover:text-gray-700 text-xl leading-none"
           >
-            —
+            ×
           </button>
         </div>
 

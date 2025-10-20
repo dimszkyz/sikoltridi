@@ -127,20 +127,13 @@ const DaftarFile = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="flex justify-between items-center p-4 bg-white border-b">
           <h1 className="text-2xl font-semibold text-gray-800">Manajemen File</h1>
-          <div className="flex items-center">
-            <img
-              src="https://placehold.co/40x40"
-              alt="Admin"
-              className="w-10 h-10 rounded-full"
-            />
-            <span className="ml-3 font-semibold">Admin</span>
-          </div>
+          
         </header>
 
         <main className="flex-1 overflow-x-auto overflow-y-auto bg-gray-100 p-6">
           <div className="bg-white p-6 rounded-lg shadow-md">
             {/* Header tabel */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-4 text-blue-700">
               <h2 className="text-xl font-semibold">Daftar File</h2>
               <button
                 onClick={() => setOpenModal(true)}

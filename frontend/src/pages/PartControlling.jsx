@@ -287,11 +287,21 @@ export default function PartControlling() {
       <Navbar />
 
       <main className="min-h-screen bg-gray-50 pt-24 pb-10">
-        <h1 className="max-w-7xl mx-auto text-2xl md:text-3xl font-bold text-slate-900 text-center mb-4 px-6 md:px-8">
-            Penggunaan Model Pendidikan Kewirausahaan Anak Usia Dini Berbasis Kolaborasi Tripusat Pendidikan
-        </h1>
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-4">
+                Penggunaan Model Pendidikan Kewirausahaan Anak Usia Dini Berbasis Kolaborasi Tripusat Pendidikan
+            </h1>
+            
+            {/* --- GARIS PEMISAH 1 --- */}
+            <hr className="border-t border-gray-500 my-4" /> {/* Menggunakan border-t (1px) dan warna abu-abu */}
+        </div>
         
         <Stepper step={step} />
+
+        <div className="max-w-7xl mx-auto px-6 md:px-8">
+            {/* --- GARIS PEMISAH 2 --- */}
+            <hr className="border-t border-gray-500 my-4" /> {/* Menggunakan border-t (1px) dan warna abu-abu */}
+        </div>
 
         {step === 1 && (
           <section className="max-w-7xl mx-auto px-6 md:px-8 print:hidden">

@@ -305,19 +305,6 @@ const Admin = () => {
         <header className="flex justify-between items-center p-4 bg-white border-b">
           <h1 className="text-2xl font-semibold text-gray-800">Dashboard</h1>
 
-          {/* Profil Admin */}
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center">
-              <img
-                src="https://placehold.co/40x40?text=A" // kamu bisa ganti dengan foto default lain
-                alt="Profile"
-                className="w-10 h-10 rounded-full border border-gray-300 object-cover"
-              />
-              <span className="ml-3 font-semibold text-gray-800">
-                {user?.username || "Admin"}
-              </span>
-            </div>
-          </div>
         </header>
 
 

@@ -67,7 +67,7 @@ export default function AddOrganizing({ open, onClose, onSuccess }) {
             aria-label="Close"
             title="Close"
           >
-            —
+            ×
           </button>
         </div>
 
