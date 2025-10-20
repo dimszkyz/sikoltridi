@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+// 1. Impor ikon
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Register = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  // 2. Tambahkan state untuk visibilitas password
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
@@ -28,55 +32,89 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
-        <h2 className="text-2xl font-bold text-center mb-6">Daftar Akun</h2>
+    // Menggunakan layout flex column agar footer menempel di bawah
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      {/* Konten utama dibuat 'flex-grow' untuk mengisi ruang */}
+      <main className="flex-grow flex items-center justify-center">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold text-center text-gray-900">Daftar Akun</h2>
 
-        <form onSubmit={handleRegister} className="space-y-4">
-          <div>
-            <label className="block mb-1 text-gray-600">Username</label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-              placeholder="Masukkan username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
+          <form onSubmit={handleRegister} className="space-y-6">
+            <div>
+              <label 
+                htmlFor="username" 
+                className="block text-sm font-medium text-gray-700"
+              >
+                Username
+              </label>
+              <input
+                id="username"
+                type="text"
+                className="w-full px-3 py-2 mt-1 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Masukkan username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
 
-          <div>
-            <label className="block mb-1 text-gray-600">Password</label>
-            <input
-              type="password"
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-              placeholder="Masukkan password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+            <div>
+              <label 
+                htmlFor="password" 
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <div className="relative mt-1">
+                <input
+                  id="password"
+                  // 3. Tipe input dinamis
+                  type={showPassword ? 'text' : 'password'}
+                  // 4. Tambah padding kanan untuk ikon
+                  className="w-full px-3 py-2 pr-10 text-gray-900 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Masukkan password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                {/* 5. Ikon Show/Hide */}
+                <div
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <FaEyeSlash className="text-gray-500" />
+                  ) : (
+                    <FaEye className="text-gray-500" />
+                  )}
+                </div>
+              </div>
+            </div>
 
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition"
-            disabled={loading}
-          >
-            {loading ? "Mengirim..." : "Ajukan Akun"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 font-medium text-white bg-blue-700 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              disabled={loading}
+            >
+              {loading ? "Mengirim..." : "Ajukan Akun"}
+            </button>
+          </form>
 
-        {/* Kembali ke login */}
-        <div className="text-center mt-4">
-          <p className="text-gray-600">Sudah punya akun?</p>
-          <button
-            onClick={() => navigate("/login")}
-            className="text-blue-600 hover:underline"
-          >
-            Kembali ke Login
-          </button>
+          <p className="text-sm text-center text-gray-600">
+            Sudah punya akun?{' '}
+            <Link to="/login" className="font-medium text-blue-600 hover:underline">
+              Login di sini
+            </Link>
+          </p>
         </div>
-      </div>
+      </main>
+      
+      {/* Footer ditambahkan di sini */}
+      <footer className="bg-white text-black text-center py-4 border-t border-gray-200">
+        <p className="text-sm tracking-wide">
+          © Copyright <span className="font-bold">GAZEBO TECH 2025</span> All Rights Reserved
+        </p>
+      </footer>
     </div>
   );
 };

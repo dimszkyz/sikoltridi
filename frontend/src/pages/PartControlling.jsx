@@ -435,7 +435,7 @@ export default function PartControlling() {
       {/* Footer copyright */}
       <footer className="bg-white text-black text-center py-4 mt-10 border-t border-gray-200">
         <p className="text-sm tracking-wide">
-          © Copyright <span className="font-bold">APR 2024</span> All Rights Reserved
+          © Copyright <span className="font-bold">GAZEBOTECH 2025</span> All Rights Reserved
         </p>
       </footer>
     </>
