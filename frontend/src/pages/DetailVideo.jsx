@@ -127,7 +127,6 @@ const DetailVideo = () => {
                   <div className="flex justify-between items-center mb-1">
                     <p className="font-semibold text-gray-800">
                       {comment.username}{' '}
-                      <span className="text-xs text-gray-500">({comment.level})</span>
                     </p>
                     <span className="text-xs text-gray-500">
                       {new Date(comment.tanggal).toLocaleString('id-ID')}
