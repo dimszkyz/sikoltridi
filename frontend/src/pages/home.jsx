@@ -1,6 +1,8 @@
 // src/pages/Home.jsx
 import React from "react";
 import { motion, MotionConfig } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom"; // <-- DITAMBAHKAN
+import { FaEnvelope } from "react-icons/fa"; // <-- DITAMBAHKAN
 import Navbar from "../components/navbar";
 import Partfile from "./PartFile";
 import logo from "../assets/img/output-onlinepngtools.png";
@@ -52,6 +54,40 @@ const imageWrap = {
 };
 
 const Home = () => {
+  // --- LOGIKA NAVIGASI DARI NAVBAR.JSX ---
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const navItems = [
+    { to: "#home", label: "Home" },
+    { to: "#partfile", label: "File" },
+    { to: "#PartPlanning", label: "Planning" },
+    { to: "#PartOrganizing", label: "Organizing" },
+    { to: "#PartMedia", label: "Actuating" },
+    { to: "/controlling", label: "Controlling", isRoute: true },
+  ];
+
+  const smoothScrollTo = (hash) => {
+    const el = document.querySelector(hash);
+    if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: "smooth" });
+  };
+
+  const goHomeWithHash = (hash) => {
+    navigate({ pathname: "/", hash: hash.slice(1) });
+  };
+
+  const handleClick = (e, item) => {
+    e.preventDefault();
+    if (item.isRoute) {
+      navigate(item.to);
+      return;
+    }
+    const onHome = location.pathname === "/";
+    if (onHome) smoothScrollTo(item.to);
+    else goHomeWithHash(item.to);
+  };
+  // --- AKHIR LOGIKA NAVIGASI ---
+
   return (
     <>
       <section
@@ -131,15 +167,61 @@ const Home = () => {
         <PartOrganizing />
       </section>
       <section id="PartMedia">
-        <PartVideo/>
+        <PartVideo />
       </section>
 
-      {/* Footer copyright */}
-      <footer className="bg-white text-black text-center py-4 mt-10 border-t border-gray-200">
-        <p className="text-sm tracking-wide">
-          © Copyright <span className="font-bold">GAZEBO TECH 2025</span> All Rights Reserved
-        </p>
+      {/* ===== FOOTER BARU (menggantikan footer lama) ===== */}
+      <footer className="bg-white text-slate-700 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pt-12 pb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+            
+            {/* Kolom 1: Logo & Brand */}
+            <div className="flex flex-col items-center md:items-start">
+              <img src={logo} alt="Logo Sikoltridi" className="w-60 h-60 object-contain mb-2" />
+            </div>
+
+            {/* Kolom 2: Fitur (dari navItems) */}
+            <div>
+              <h4 className="font-bold text-lg mb-3 text-slate-900">Fitur</h4>
+              <ul className="space-y-2 text-slate-600">
+                {navItems.map((item) => (
+                  <li key={`footer-${item.label}`}>
+                    <a
+                      href={item.isRoute ? item.to : `/${item.to}`}
+                      onClick={(e) => handleClick(e, item)}
+                      className="hover:text-blue-600 transition cursor-pointer"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Kolom 3: Info Lebih Lanjut (sesuai permintaan) */}
+            <div>
+              <h4 className="font-bold text-lg mb-3 text-slate-900">Informasi Lebih Lanjut</h4>
+              <ul className="space-y-2 text-slate-600">
+                <li className="flex items-center justify-center md:justify-start">
+                  <FaEnvelope className="mr-2" />
+                  <a href="mailto:Gtech@gmail.com" className="hover:text-blue-600">
+                    Gtech@gmail.com
+                  </a>
+                </li>
+              </ul>
+            </div>
+            
+          </div>
+          {/* Copyright */}
+          <div className="border-t border-gray-200 mt-10 pt-6 text-center text-gray-500 text-sm">
+            <p className="tracking-wide">
+              © Copyright <span className="font-bold">GAZEBO TECH 2025</span> All Rights Reserved
+            </p>
+          </div>
+        </div>
       </footer>
+      {/* ===== AKHIR FOOTER BARU ===== */}
+
       <ScrollTopButton />
     </>
   );

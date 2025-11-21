@@ -36,7 +36,20 @@ const Login = () => {
 
   return (
     // Wrapper utama untuk layout flex column
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    // --- TAMBAHKAN 'relative' DI SINI ---
+    <div className="relative flex flex-col min-h-screen bg-gray-100">
+      
+      {/* --- TOMBOL KEMBALI PINDAH KE SINI --- */}
+      <div className="absolute top-4 left-4 z-10">
+        <Link
+          to="/"
+          className="text-sm font-medium text-gray-700 hover:text-blue-600 hover:underline"
+        >
+          &larr; Kembali ke Beranda
+        </Link>
+      </div>
+      {/* ------------------------------------- */}
+
       {/* Konten utama yang akan mengisi ruang tersedia */}
       <main className="flex-grow flex items-center justify-center">
         <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -104,6 +117,9 @@ const Login = () => {
               Daftar di sini
             </Link>
           </p>
+          
+          {/* --- TOMBOL KEMBALI DIHAPUS DARI SINI --- */}
+          
         </div>
       </main>
 

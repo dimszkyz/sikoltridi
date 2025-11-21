@@ -16,6 +16,7 @@ import {
   FaClipboardCheck,
   FaExclamationTriangle,
   FaTimes,
+  FaExternalLinkAlt, // <-- Tambahkan ikon ini
 } from "react-icons/fa";
 
 const SidebarAdmin = () => {
@@ -98,6 +99,30 @@ const SidebarAdmin = () => {
 
         {/* === Navigation === */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+          {/* --- TOMBOL LIHAT SITUS DITAMBAHKAN DI SINI --- */}
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Lihat Situs"
+            className="relative flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-white/5 hover:shadow-inner text-slate-300"
+          >
+            <span
+              className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 rounded-r-lg transition bg-transparent"
+            />
+            <div
+              className="grid place-items-center h-9 w-9 rounded-lg transition bg-white/5 text-slate-300"
+            >
+              <FaExternalLinkAlt size={18} />
+            </div>
+            {!collapsed && (
+              <span className="text-sm font-medium tracking-wide">
+                Lihat Situs
+              </span>
+            )}
+          </a>
+          {/* ------------------------------------------- */}
+
           {navLinks.map((link) => {
             const Icon = link.icon;
             return (
@@ -247,7 +272,7 @@ const SidebarAdmin = () => {
 
       {/* MODAL KONFIRMASI LOGOUT */}
       {isLogoutModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm"> {/* <<< INI PERUBAHANNYA */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
           <div className="relative w-full max-w-md p-6 mx-4 bg-slate-800 rounded-2xl shadow-lg ring-1 ring-white/10">
             <button
               onClick={() => setLogoutModalOpen(false)}

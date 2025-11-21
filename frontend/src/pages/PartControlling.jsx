@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import axios from "axios";
-import Navbar from "../components/navbar";
+// import Navbar from "../components/navbar"; // <-- DIHILANGKAN
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 const SCALE = ["Sangat Baik", "Baik", "Cukup", "Kurang", "Sangat Kurang"];
@@ -284,9 +284,31 @@ export default function PartControlling() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */} {/* <-- DIHILANGKAN */}
 
-      <main className="min-h-screen bg-gray-50 pt-24 pb-10">
+      {/* Ubah pt-24 menjadi pt-8 */}
+      <main className="min-h-screen bg-gray-50 pt-8 pb-10">
+
+        {/* --- NAVBAR BARU SESUAI GAMBAR --- */}
+        <div className="max-w-7xl mx-auto px-6 md:px-8 mb-8">
+          <nav className="bg-white rounded-full shadow-md flex items-center justify-between py-3 px-6">
+            {/* Brand Name */}
+            <span className="text-2xl font-bold text-teal-900">
+              Sikoltridi
+            </span>
+            
+            {/* Home Button */}
+            <a
+              href="/"
+              className="bg-red-600 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-red-700 active:scale-[0.98] transition"
+            >
+              Kembali Ke Home
+            </a>
+          </nav>
+        </div>
+        {/* --- AKHIR NAVBAR BARU --- */}
+
+
         <div className="max-w-7xl mx-auto px-6 md:px-8">
             <h1 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-4">
                 Penggunaan Model Pendidikan Kewirausahaan Anak Usia Dini Berbasis Kolaborasi Tripusat Pendidikan

@@ -65,6 +65,9 @@ const DaftarPengajuanAkun = () => {
             <tr>
               <th className="p-3 text-center border">No</th>
               <th className="p-3 text-center border">Username</th>
+              <th className="p-3 text-center border">Nama Lengkap</th>
+              <th className="p-3 text-center border">Jabatan</th>
+              <th className="p-3 text-center border">NIP/NIK(Kepegawaian)</th>
               <th className="p-3 text-center border">Role</th>
               <th className="p-3 text-center border">Aksi</th>
             </tr>
@@ -74,6 +77,9 @@ const DaftarPengajuanAkun = () => {
               <tr key={item.id} className="hover:bg-gray-100 transition border">
                 <td className="p-3 text-center border">{index + 1}</td>
                 <td className="p-3 text-center border">{item.username}</td>
+                <td className="p-3 text-center border">{item.nama_lengkap}</td>
+                <td className="p-3 text-center border">{item.jabatan}</td>
+                <td className="p-3 text-center border">{item.nip_nik}</td>
                 <td className="p-3 text-center border">
                   <select
                     value={item.role || "user"}
